@@ -1,0 +1,20 @@
+{
+ “name":“xxxxx "，
+   "version": "v33.4455",
+   "modified date": "",
+   "actions": {
+           "pull":{
+                time:5，
+                slot:1
+            },
+         “heat"：{
+	time:6,
+	temp:200
+            },
+           "stopheat":{
+               time:10,
+               temp:0
+            }
+   }
+
+}	

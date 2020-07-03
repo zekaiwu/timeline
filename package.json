@@ -11,6 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "moment": "^2.27.0",
+    "sweetalert": "^2.1.2",
     "vis-timeline": "^7.3.7"
   }
 }
