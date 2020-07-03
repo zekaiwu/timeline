@@ -1,0 +1,74 @@
+<!doctype html>
+<html>
+<head>
+  <title>Timeline</title>
+  <script type="text/javascript" src="//unpkg.com/vis-timeline@latest/standalone/umd/vis-timeline-graph2d.min.js"></script>
+  <link href="//unpkg.com/vis-timeline@latest/styles/vis-timeline-graph2d.min.css" rel="stylesheet" type="text/css" />
+  <style type="text/css">
+    #visualization {
+      width: 1500px;
+      height: 400px;
+      border: 1px solid lightgray;
+    }
+  </style>
+</head>
+<body>
+<div id="visualization"></div>
+<script src="moment.js"></script>
+<script type="text/javascript">
+  // DOM element where the Timeline will be attached
+  var container = document.getElementById('visualization');
+
+  // Create a DataSet (allows two way data-binding)
+  var startTime = new Date("January 1, 2020 00:00:00");
+  var longStartTime = new Date("December 31, 2019 23:59:40");
+  var endTime = new Date("January 1, 2020 00:10:00");
+  var longEndTime = new Date("January 1, 2020 00:00:20");
+  var items = new vis.DataSet([
+    {id: 1, content: 'item 1', start: new Date("January 1, 2020 00:01:00"),
+    end:  new Date("January 1, 2020 00:02:00")},
+  ]);
+
+  // Configuration for the Timeline
+  var options = {min: longStartTime,
+                  max: endTime,
+                  start: startTime,
+                  end: endTime,
+                  width: '100%',
+                  height: '500px',
+                  timeAxis:{scale:'second',step:5},
+                  editable: true,
+                  itemAlwaysDraggable:{
+                    item: true,
+                    range: true
+                  },
+                  minorLabels: {
+    millisecond:'SSS',
+    second:     's',
+    minute:     's',
+    hour:       's',
+    weekday:    's',
+    day:        's',
+    week:       's',
+    month:      's',
+    year:       's'
+  },
+  majorLabels: {
+    millisecond:'HH:mm:ss',
+    second:     'D MMMM HH:mm',
+    minute:     'ddd D MMMM',
+    hour:       'ddd D MMMM',
+    weekday:    'MMMM YYYY',
+    day:        'MMMM YYYY',
+    week:       'MMMM YYYY',
+    month:      'YYYY',
+    year:       ''
+  }
+
+};
+
+  // Create a Timeline
+  var timeline = new vis.Timeline(container, items, options);
+</script>
+</body>
+</html>
