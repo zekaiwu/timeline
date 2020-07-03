@@ -38,32 +38,36 @@
                   height: '500px',
                   timeAxis:{scale:'second',step:5},
                   editable: true,
-                  itemAlwaysDraggable:{
+                  itemsAlwaysDraggable:{
                     item: true,
                     range: true
                   },
-                  minorLabels: {
-    millisecond:'SSS',
-    second:     's',
-    minute:     's',
-    hour:       's',
-    weekday:    's',
-    day:        's',
-    week:       's',
-    month:      's',
-    year:       's'
-  },
-  majorLabels: {
-    millisecond:'HH:mm:ss',
-    second:     'D MMMM HH:mm',
-    minute:     'ddd D MMMM',
-    hour:       'ddd D MMMM',
-    weekday:    'MMMM YYYY',
-    day:        'MMMM YYYY',
-    week:       'MMMM YYYY',
-    month:      'YYYY',
-    year:       ''
+                  format:{
+                    minorLabels: {
+                      millisecond:'SSS',
+                      second:     's',
+                      minute:     '',
+                      hour:       '',
+                      weekday:    '',
+                      day:        '',
+                      week:       '',
+                      month:      '',
+                      year:       ''
+                  },
+                  majorLabels: {
+                    millisecond:'HH:mm:ss',
+                    second:     'mm:ss',
+                    minute:     'mm',
+                    hour:       '',
+                    weekday:    '',
+                    day:        '',
+                    week:       '',
+                    month:      '',
+                    year:       ''
+                  }
   }
+  
+
 
 };
 
