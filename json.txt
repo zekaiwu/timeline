@@ -1,20 +1,21 @@
 {
- “name":“xxxxx "，
-   "version": "v33.4455",
-   "modified date": "",
-   "actions": {
-           "pull":{
-                time:5，
-                slot:1
-            },
-         “heat"：{
-	time:6,
-	temp:200
-            },
-           "stopheat":{
-               time:10,
-               temp:0
-            }
-   }
-
-}	
+   "id": 41,
+   "name": "炒三絲",
+   "version": "33",
+   "modified date": "2012-04-23T18:25:43.511Z",
+   "uuid": "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d'",
+   "actions": [
+         {
+            "time":5,
+            "command":"POURBOX 1"
+         },
+         {
+            "time":6,
+            "command":"WOKTEMP 200"
+         },
+         {
+            "time":10,
+            "command":"WOKTEMP 0"
+         }
+   ]
+}
