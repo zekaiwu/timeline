@@ -2,7 +2,6 @@
 <html>
 
 <head>
-  <title>Timeline</title>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert@1.1.3/dist/sweetalert.min.js"></script>
   <link href="https://cdn.jsdelivr.net/npm/sweetalert@1.1.3/dist/sweetalert.css" rel="stylesheet" type="text/css">
   <script type="text/javascript" src="//unpkg.com/vis-timeline@latest/standalone/umd/vis-timeline-graph2d.min.js"></script>
@@ -17,8 +16,14 @@
 </head>
 
 <body>
+  <div id="name"></div>
+  <div id="id"></div>
+  <div id="version"></div>
+  <div id="modified_date"></div>
+  <div id="uuid"></div>
+  <div id=remarks></div>
   <div id="visualization"></div>
-  <script type="text/javascript" src="main.js"></script>
+  <script type="module" src="main.js"></script>
 </body>
 
 </html>
