@@ -3,13 +3,15 @@ var container = document.getElementById('visualization');
 
 // Create a DataSet (allows two way data-binding)
 let startTime = new Date(2020,0,1,0,0,0);
-let endTime = new Date(2020,0,1,0,10,0);
+let endTime = new Date(2020,0,1,0,9,0);
+console.log(startTime.getTime());
+length = -(new Date(2020,0,1,0,1,0)).getTime()+(new Date(2020,0,1,0,2,0)).getTime();
 var items = new vis.DataSet([{
   id: 1,
   content: 'item 1',
   start: new Date(2020,0,1,0,1,0),
   end: new Date(2020,0,1,0,2,0),
-  length: this.end-this.start,
+  length: length,
 }, ]);
 
 // Configuration for the Timeline
@@ -80,16 +82,23 @@ var options = {
     });
   },
   onMoving: function (item, callback) {
-    if ((item.start-item.end)!=item.range) {
-      if (item.end==endTime) item.start=item.end-item.range;
+    if ((item.end-item.start)!=item.length) {
+      if (item.start+item.length-endTime>=0) {
+        item.start=endTime-item.length;
+        item.end=endTime;
+      }
       else{
-        item.end=item.start+item.range;
-        console.log(2);
+        item.end.setTime(item.start.getTime()+item.length);
       }
     }
-    if (item.start < startTime) item.start = startTime;
-    if (item.start > endTime) item.start = endTime;
-    if (item.end   > endTime) item.end   = endTime;
+    if (item.start < startTime) {
+      item.start = startTime;
+      item.end.setTime(item.start.getTime()+item.length);
+    }
+    if (item.end> endTime) {
+      item.end = endTime;
+      item.start.setTime(item.end.getTime()-item.length);
+    }
     callback(item); // send back the (possibly) changed item
 },
 
