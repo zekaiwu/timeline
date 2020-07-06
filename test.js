@@ -1,20 +1,44 @@
 
   // note that months are zero-based in the JavaScript Date object, so month 3 is April
   var items = new vis.DataSet([
-    {id: 1, content: 'item 1', start: new Date(2013, 3, 20)},
-    {id: 2, content: 'item 2', start: new Date(2013, 3, 14)},
-    {id: 3, content: 'item 3', start: new Date(2013, 3, 18)},
-    {id: 4, content: 'item 4', start: new Date(2013, 3, 16), end: new Date(2013, 3, 19)},
-    {id: 5, content: 'item 5', start: new Date(2013, 3, 25)},
-    {id: 6, content: 'item 6', start: new Date(2013, 3, 27)}
+    {id: 4, content: 'item 4', start: new Date(2020,0,1,0,1,0), end: new Date(2020,0,1,0,2,0)},
   ]);
 
-  var min = new Date(2013, 3, 1); // 1 april
-  var max = new Date(2013, 3, 30, 23, 59, 59); // 30 april
+  let min = new Date(2020,0,1,0,0,0);
+  let max = new Date(2020,0,1,0,10,0);
 
   var container = document.getElementById('visualization');
   var options = {
+    min: min,
+    max: max,
+    start: min,
+    end: max,
+    height: '500px',
     editable: true,
+    format: {
+      minorLabels: {
+        millisecond: 'mm:ss',
+        second: 'mm:ss',
+        minute: 'mm:ss',
+        hour: '',
+        weekday: '',
+        day: '',
+        week: '',
+        month: '',
+        year: ''
+      },
+      majorLabels: {
+        millisecond: 'HH:mm:ss',
+        second: 'mm:ss',
+        minute: 'mm:ss',
+        hour: 'mm:ss',
+        weekday: '',
+        day: '',
+        week: '',
+        month: '',
+        year: ''
+      }
+    },
 
     onAdd: function (item, callback) {
       prettyPrompt('Add item', 'Enter text content for new item:', item.content, function (value) {
@@ -24,21 +48,6 @@
         }
         else {
           callback(null); // cancel item creation
-        }
-      });
-    },
-
-    onMove: function (item, callback) {
-      var title = 'Do you really want to move the item to\n' +
-          'start: ' + item.start + '\n' +
-          'end: ' + item.end + '?';
-
-      prettyConfirm('Move item', title, function (ok) {
-        if (ok) {
-          callback(item); // send back item as confirmation (can be changed)
-        }
-        else {
-          callback(null); // cancel editing item
         }
       });
     },
