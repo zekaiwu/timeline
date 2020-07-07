@@ -1,5 +1,7 @@
 //get file
+
 import {showTimeLine} from '/timeline.js';
+let filename="example.json";
 var xmlhttp = new XMLHttpRequest();
 xmlhttp.onreadystatechange = function() {
   if (this.readyState == 4 && this.status == 200) {
@@ -13,5 +15,5 @@ xmlhttp.onreadystatechange = function() {
     showTimeLine(myObj);
   }
 };
-xmlhttp.open("GET", "example.json", true);
+xmlhttp.open("GET", filename, true);
 xmlhttp.send();

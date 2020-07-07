@@ -4,7 +4,7 @@ export function showTimeLine(recipe) {
   let actions = recipe.actions;
   let startTime = new Date(2020, 0, 1, 0, 0, 0);
   let endTime = new Date(2020, 0, 1, 0, 10, 0);
-  let length = 3000;
+  let length = 5000;
   let items = new vis.DataSet();
   for (let i = 0; i < actions.length; i++) {
     items.add({
@@ -20,7 +20,10 @@ export function showTimeLine(recipe) {
 
   // Configuration for the Timeline
   var options = {
-    timeAxis: {scale: 'second', step: 5},
+    timeAxis: {
+      scale: 'second',
+      step: 5
+    },
     min: startTime,
     max: endTime,
     start: startTime,
@@ -32,9 +35,9 @@ export function showTimeLine(recipe) {
     },
     format: {
       minorLabels: {
-        millisecond: 'ss',
-        second: 'ss',
-        minute: 'ss',
+        millisecond: '',
+        second: '',
+        minute: '',
         hour: '',
         weekday: '',
         day: '',
@@ -57,11 +60,11 @@ export function showTimeLine(recipe) {
     onAdd: function(item, callback) {
       prettyPrompt('Add item', 'Enter text content for new item:', item.content, function(value) {
         if (value) {
-          item.content = value[0]+' '+value[1];
-          item.start=new Date().setTime(startTime.getTime() + value[2] * 1000);
-          item.length=length;
-          item.end= new Date().setTime(startTime.getTime() + value[2] * 1000 + length),
-          callback(item); // send back adjusted new item
+          item.content = value[0] + ' ' + value[1];
+          item.start = new Date().setTime(startTime.getTime() + value[2] * 1000);
+          item.length = length;
+          item.end = new Date().setTime(startTime.getTime() + value[2] * 1000 + length),
+            callback(item); // send back adjusted new item
         } else {
           callback(null); // cancel item creation
         }
@@ -71,10 +74,10 @@ export function showTimeLine(recipe) {
     onUpdate: function(item, callback) {
       prettyPrompt('Update item', 'Edit items text:', item.content, function(value) {
         if (value) {
-          item.content = value[0]+' '+value[1];
-          item.start=new Date().setTime(startTime.getTime() + value[2] * 1000);
-          item.end= new Date().setTime(startTime.getTime() + value[2] * 1000 + length),
-          callback(item); // send back adjusted item
+          item.content = value[0] + ' ' + value[1];
+          item.start = new Date().setTime(startTime.getTime() + value[2] * 1000);
+          item.end = new Date().setTime(startTime.getTime() + value[2] * 1000 + length),
+            callback(item); // send back adjusted item
         } else {
           callback(null); // cancel updating the item
         }
@@ -127,15 +130,16 @@ export function showTimeLine(recipe) {
   }
   */
   async function prettyPrompt(title, text, inputValue, callback) {
-    const { value: formValues } = await Swal.fire({
+    const {
+      value: formValues
+    } = await Swal.fire({
       title: 'Multiple inputs',
-      html:
-        'function'+
-        '<select id="swal-input1" class="swal2-input" list="swal-input1" name="swal-input1">'+
-        '<option value="WORKTEMP">WORKTEMP</option>'+
-        '<option value="POURBOX">POURBOX</option>'+
-        '</select>'+
-        'parameter<input id="swal-input2" class="swal2-input">'+
+      html: 'function' +
+        '<select id="swal-input1" class="swal2-input" list="swal-input1" name="swal-input1">' +
+        '<option value="WORKTEMP">WORKTEMP</option>' +
+        '<option value="POURBOX">POURBOX</option>' +
+        '</select>' +
+        'parameter<input id="swal-input2" class="swal2-input">' +
         'time<input id="swal-input3" class="swal2-input">',
       focusConfirm: false,
       preConfirm: () => {
@@ -149,15 +153,21 @@ export function showTimeLine(recipe) {
     if (formValues) {
       callback(formValues);
     }
-}
+  }
 
   function prettyConfirm(title, text, callback) {
-    swal({
-      title: title,
-      text: text,
-      type: 'warning',
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
       showCancelButton: true,
-      confirmButtonColor: "#DD6B55"
-    }, callback);
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+      if (result.value) {
+        callback(1);
+      }
+    })
   }
 }
