@@ -2,17 +2,25 @@
 <html>
 
 <head>
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert@1.1.3/dist/sweetalert.min.js"></script>
-  <link href="https://cdn.jsdelivr.net/npm/sweetalert@1.1.3/dist/sweetalert.css" rel="stylesheet" type="text/css">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+  <script src="https://cdn.jsdelivr.net/npm/promise-polyfill@8/dist/polyfill.js"></script>
   <script type="text/javascript" src="//unpkg.com/vis-timeline@latest/standalone/umd/vis-timeline-graph2d.min.js"></script>
   <link href="//unpkg.com/vis-timeline@latest/styles/vis-timeline-graph2d.min.css" rel="stylesheet" type="text/css" />
   <style type="text/css">
     #visualization {
       width: 1500px;
-      height: 400px;
+      height: 500px;
       border: 1px solid lightgray;
     }
+    body, html {
+      font-family: sans-serif;
+    }
+
+    .vis-item .vis-item-overflow {
+      overflow: visible;
+    }
   </style>
+
 </head>
 
 <body>
