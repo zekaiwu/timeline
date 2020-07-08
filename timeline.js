@@ -3,7 +3,7 @@ export function showTimeLine(recipe) {
   var container = document.getElementById('visualization');
   let actions = recipe.actions;
   let startTime = new Date(2020, 0, 1, 0, 0, 0);
-  let endTime = new Date(2020, 0, 1, 0, 10, 0);
+  let endTime = new Date(2020, 0, 1, 0, 5, 0);
   let length = 5000;
   let items = new vis.DataSet();
   for (let i = 0; i < actions.length; i++) {
@@ -111,7 +111,9 @@ export function showTimeLine(recipe) {
         item.start.setTime(item.end.getTime() - item.length);
       }
       callback(item); // send back the (possibly) changed item
+      document.getElementById('change').innerHTML = item.start.getMinutes()+":"+item.start.getSeconds();
     },
+
 
 
   };
