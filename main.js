@@ -2,7 +2,7 @@ let filename = "example.json";
 var xmlhttp = new XMLHttpRequest();
 let s=0;
 let myObj;
-let items = new vis.DataSet();
+let items = [];
 xmlhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
       if(s<1){
@@ -54,11 +54,7 @@ xmlhttp.onreadystatechange = function() {
 
       };
       document.getElementById("saveBotton").onclick = function() {
-        myObj.action = [];
-        console.log(JSON.stringify(items[1]));
-        myObj.actions[i] = {
-            time : (items[i].start.getTime()-startTime.getTime())/1000,
-          }; 
+        
         var data = new FormData();
         data.append('filename', "example.json");
         data.append('name', myObj.name);
@@ -78,21 +74,28 @@ xmlhttp.onreadystatechange = function() {
     };
   xmlhttp.open("GET", filename, true);
   xmlhttp.send();
+
+
+
+
+  //function to show timeline
   function showTimeLine() {
       // DOM element where the Timeline will be attached
       var container = document.getElementById('visualization');
-      let actions = myObj.actions;
       let startTime = new Date(2020, 0, 1, 0, 0, 0);
       let endTime = new Date(2020, 0, 1, 0, 5, 0);
       let length = 5000;
-      for (let i = 0; i < actions.length; i++) {
-        items.add({
+      for (let i = 0; i < myObj.actions.length; i++) {
+        items[i] = {
           id: i,
-          content: actions[i].command,
-          start: new Date().setTime(startTime.getTime() + actions[i].time * 1000),
-          end: new Date().setTime(startTime.getTime() + actions[i].time * 1000 + length),
+          content: myObj.actions[i].command,
+          start: new Date().setTime(startTime.getTime() + myObj.actions[i].time * 1000),
+          end: new Date().setTime(startTime.getTime() + myObj.actions[i].time * 1000 + length),
           length: length,
-        })
+        };
+        myObj.actions[i] = {
+          id : i,
+        }
       }
       // Create a DataSet (allows two way data-binding)
     
@@ -140,7 +143,26 @@ xmlhttp.onreadystatechange = function() {
         },
         onAdd: function(item, callback) {
           prettyPrompt('Add item', 'Enter text content for new item:', item.content, function(value) {
-            if (value) {
+
+            //function to generate the id of items
+            let tempID;
+            for (let i = 0; i <= myObj.actions[i];i++){
+              let occupied = false;
+              for(let j=0; j<myObj.actions[j];j++){
+                if(myObj.actions[j].id == i){
+                  occupied = true;
+                  break;
+                }
+              if (occupied == false){
+                tempID = i;
+                break;
+              } 
+              }
+            }
+
+            //set up items to add
+            if (value){
+              item.id = tempID;
               item.content = value[0] + ' ' + value[1];
               item.start = new Date().setTime(startTime.getTime() + value[2] * 1000);
               item.length = length;
@@ -148,6 +170,7 @@ xmlhttp.onreadystatechange = function() {
               let action = {
                 command : item.content,
                 time : value[2],
+                id : tempID,
               };
               myObj.actions.push(action);
               callback(item); // send back adjusted new item
@@ -248,4 +271,4 @@ xmlhttp.onreadystatechange = function() {
         })
       }
     }
-    
+  
