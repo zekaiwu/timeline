@@ -86,6 +86,7 @@ xmlhttp.onreadystatechange = function() {
       let endTime = new Date(2020, 0, 1, 0, 5, 0);
       let length = 5000;
       for (let i = 0; i < myObj.actions.length; i++) {
+        let tempTime = myObj.actions[i].time;
         items[i] = {
           id: i,
           content: myObj.actions[i].command,
@@ -95,6 +96,8 @@ xmlhttp.onreadystatechange = function() {
         };
         myObj.actions[i] = {
           id : i,
+          command : items[i].content,
+          time : tempTime,
         }
       }
       // Create a DataSet (allows two way data-binding)
@@ -143,25 +146,24 @@ xmlhttp.onreadystatechange = function() {
         },
         onAdd: function(item, callback) {
           prettyPrompt('Add item', 'Enter text content for new item:', item.content, function(value) {
-
-            //function to generate the id of items
-            let tempID;
-            for (let i = 0; i <= myObj.actions[i];i++){
-              let occupied = false;
-              for(let j=0; j<myObj.actions[j];j++){
-                if(myObj.actions[j].id == i){
-                  occupied = true;
-                  break;
-                }
-              if (occupied == false){
+            if (value){
+              //function to generate the id of items
+              let tempID;
+              for (let i = 0; i <= myObj.actions[i];i++){
+                let occupied = false;
+                for(let j=0; j<myObj.actions[j];j++){
+                  if(myObj.actions[j].id == i){
+                    occupied = true;
+                    break;
+                  }
+                if (occupied == false){
                 tempID = i;
                 break;
-              } 
+                } 
+                }
               }
-            }
 
-            //set up items to add
-            if (value){
+              //set up items to add
               item.id = tempID;
               item.content = value[0] + ' ' + value[1];
               item.start = new Date().setTime(startTime.getTime() + value[2] * 1000);
@@ -186,6 +188,16 @@ xmlhttp.onreadystatechange = function() {
               item.content = value[0] + ' ' + value[1];
               item.start = new Date().setTime(startTime.getTime() + value[2] * 1000);
               item.end = new Date().setTime(startTime.getTime() + value[2] * 1000 + length);
+
+              //update myObj.actions
+              for (let i=0;i<myObj.actions.length;i++){
+                if (item.id == myObj.actions[i].id){
+                  myObj.actions[i].time = value[2];
+                  myObj.actions[i].command = value[0] + ' ' + value[1];
+                  break;
+                }
+              }
+
               callback(item); // send back adjusted item
             } else {
               callback(null); // cancel updating the item
@@ -196,6 +208,15 @@ xmlhttp.onreadystatechange = function() {
         onRemove: function(item, callback) {
           prettyConfirm('Remove item', 'Do you really want to remove item ' + item.content + '?', function(ok) {
             if (ok) {
+              
+              //remove the action in myObj.actions
+              for (let i=0;i<myObj.actions.length;i++){
+                if (item.id == myObj.actions[i].id){
+                  delete myObj.actions[i];
+                  break;
+                }
+              }
+
               callback(item); // confirm deletion
             } else {
               callback(null); // cancel deletion
@@ -219,6 +240,15 @@ xmlhttp.onreadystatechange = function() {
             item.end = endTime;
             item.start.setTime(item.end.getTime() - item.length);
           }
+
+          //set time in actions
+          for (let i=0;i<myObj.actions.length;i++){
+            if (item.id == myObj.actions[i].id){
+              myObj.actions[i].time = (item.start.getTime()-startTime.getTime())/1000;
+              break;
+            }
+          }
+
           callback(item); // send back the (possibly) changed item
           document.getElementById('change').innerHTML = item.start.getMinutes()+":"+item.start.getSeconds();
         },
