@@ -1,4 +1,4 @@
-export function showTimeLine(recipe) {
+function showTimeLine(recipe) {
   // DOM element where the Timeline will be attached
   var container = document.getElementById('visualization');
   let actions = recipe.actions;
