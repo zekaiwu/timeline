@@ -12,6 +12,8 @@ http.createServer(function (request, response) {
         body.push(chunk);
         //console.log(chunk.get("name"));
       }).on('end', () => {
+
+        //get information
         body = Buffer.concat(body).toString();
         lines = body.split(/\r\n|\r|\n/); 
         let output,actions = [];
@@ -33,7 +35,7 @@ http.createServer(function (request, response) {
             remarks : lines[27],
             actions : actions,
         };
-        fs.writeFile(output.filename, JSON.stringify(output), function (err) {
+        fs.writeFile(output.filename, JSON.stringify(output,null,"\t"), function (err) {
             if (err) throw err;
             console.log('saved!');
           });

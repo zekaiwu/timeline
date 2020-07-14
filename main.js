@@ -8,6 +8,7 @@ xmlhttp.onreadystatechange = function() {
       if(s<1){
         myObj = JSON.parse(this.responseText);
       }
+      
       document.getElementById("name").innerHTML = myObj.name;
       document.getElementById("id").innerHTML = myObj.id;
       document.getElementById("version").innerHTML = myObj.version;
@@ -31,6 +32,20 @@ xmlhttp.onreadystatechange = function() {
         if (name) {
           myObj.name = name;
           document.getElementById("name").innerHTML = myObj.name;
+        }
+
+      };
+      document.getElementById("versionBotton").onclick = async function() {
+        const {
+          value: version
+        } = await Swal.fire({
+          input: 'text',
+          inputPlaceholder: 'Enter the version'
+        })
+
+        if (version) {
+          myObj.version = version;
+          document.getElementById("version").innerHTML = myObj.version;
         }
 
       };
@@ -60,7 +75,9 @@ xmlhttp.onreadystatechange = function() {
         data.append('name', myObj.name);
         data.append('id', myObj.id);
         data.append('version',myObj.version);
-        data.append('modified_date',myObj.modified_date);
+
+        let currentTime = new Date();
+        data.append('modified_date',currentTime.toString());
         data.append('uuid',myObj.uuid);
         data.append('remarks',myObj.remarks);
         for(let i=0;i < myObj.actions.length;i++){
@@ -74,9 +91,6 @@ xmlhttp.onreadystatechange = function() {
     };
   xmlhttp.open("GET", filename, true);
   xmlhttp.send();
-
-
-
 
   //function to show timeline
   function showTimeLine() {

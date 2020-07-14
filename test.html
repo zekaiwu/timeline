@@ -1,0 +1,23 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+</head>
+<body>
+</body>
+<script>
+var pullfiles=function(){ 
+    var fileInput = document.querySelector("#myfiles");
+    var files = fileInput.files;
+    var fl = files.length;
+    var i = 0;
+    while ( i < fl) {
+        var file = files[i];
+        alert(file.name);
+        i++;
+    }    
+}
+document.querySelector("#myfiles").onchange=pullfiles;
+
+</script>
+
+</html>
