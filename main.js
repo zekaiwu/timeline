@@ -1,14 +1,14 @@
 let filename = "example.json";
 var xmlhttp = new XMLHttpRequest();
-let s=0;
+let requestNum=0;
 let myObj;
 let items = [];
 xmlhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
-      if(s<1){
+      
+      if(requestNum<1){//
         myObj = JSON.parse(this.responseText);
       }
-      
       document.getElementById("name").innerHTML = myObj.name;
       document.getElementById("id").innerHTML = myObj.id;
       document.getElementById("version").innerHTML = myObj.version;
@@ -16,12 +16,12 @@ xmlhttp.onreadystatechange = function() {
       document.getElementById("uuid").innerHTML = myObj.uuid;
       document.getElementById("remarks").innerHTML = myObj.remarks;
       //show actions in timeline
-      if(s<1){
+      if(requestNum<1){
         showTimeLine();
-        s+=1;
+        requestNum+=1;
       }
       //change other information
-      document.getElementById("nameBotton").onclick = async function() {
+      document.getElementById("nameButton").onclick = async function() {
         const {
           value: name
         } = await Swal.fire({
@@ -35,7 +35,7 @@ xmlhttp.onreadystatechange = function() {
         }
 
       };
-      document.getElementById("versionBotton").onclick = async function() {
+      document.getElementById("versionButton").onclick = async function() {
         const {
           value: version
         } = await Swal.fire({
@@ -68,7 +68,7 @@ xmlhttp.onreadystatechange = function() {
         }
 
       };
-      document.getElementById("saveBotton").onclick = function() {
+      document.getElementById("saveButton").onclick = function() {
         
         var data = new FormData();
         data.append('filename', "example.json");
@@ -86,6 +86,10 @@ xmlhttp.onreadystatechange = function() {
         }
         xmlhttp.open("POST", "example.json", true);
         xmlhttp.send(data);
+      };
+      document.getElementById("newButton").onclick = function() {
+        
+        redraw();
       };
     }
     };
