@@ -1,23 +1,35 @@
-<!DOCTYPE HTML>
+<!doctype html>
 <html>
 <head>
 </head>
 <body>
-</body>
-<script>
-var pullfiles=function(){ 
-    var fileInput = document.querySelector("#myfiles");
-    var files = fileInput.files;
-    var fl = files.length;
-    var i = 0;
-    while ( i < fl) {
-        var file = files[i];
-        alert(file.name);
-        i++;
-    }    
-}
-document.querySelector("#myfiles").onchange=pullfiles;
-
-</script>
-
+    <select id="swal-input1" class="swal2-input" list="swal-input1" name="swal-input1">
+        <option value="WORKTEMP">設置溫度</option>
+        <option value="POURBOX">倒盒</option>
+        <option value="WOKOIL">起鑊</option>
+        <option value="LOADBOX">取盒</option>
+        <option value="PSDS">下調料</option>
+        <option value="PLQS">加液體</option>
+        <option value="LOADBOX">取盒</option>
+        <option value="WAIT">翻炒</option>
+        <option value="POURFOOD">上菜</option>
+        <option value="WOKCLEAN">洗鍋</option>
+        <option value="WOKY">設置轉速</option>
+        <option value="END">完成</option>
+        <option value="INIT">初始化</option>
+        </select>
+        <span id="input2"></span>
+        <script>
+            let action = document.getElementById("swal-input1").innerHTML;
+            if (action == "PSDS"){
+                console.log(1);
+                document.getElementById("input2").innerHTML = '<select id=swal-input2 class="swal2-input" list="swal-input2" name="swal-input2">'+
+                                                                '<option value = 0>假的</option>'+
+                                                                '<option value = 1>下糖</option>';
+            }
+            else{
+                document.getElementById("input2").innerHTML = 'parameter<input id="swal-input2" class="swal2-input">';
+            }   
+        </script>
+        time<input id="swal-input3" class="swal2-input">
 </html>

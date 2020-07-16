@@ -1,3 +1,37 @@
+let command_dict = new Map([
+  ['WOKOIL','起鑊'],
+  ['LOADBOX','取盒'],
+  ['LOADBOXF','取盒'],
+  ['POURBOX','倒盒'],
+  ['POURBOXF','倒盒'],
+  ['PSDS', new Map([['0','假的'],['1','下糖'],['2','下鹽'],['3','胡椒'],['4','自定調料']  ])],
+  ['PLQS', new Map([['0','假的'],['1','加水'],['2','下油'],['3','3號泵噴出'],['4','4號泵噴出'],['5','5號泵噴出'],
+                  ['6','芡汁'],['7','7號泵噴出'],['8','8號泵噴出']])],
+  ['WOKTEMP','設置溫度'],
+  ['WAIT','翻炒'],
+  ['POURFOOD','上菜'],
+  ['WOKCLEAN','洗鍋'],
+  ['WOKY','設置轉速'],
+  ['END','完成'],
+  ['INIT','初始化'],
+]);
+let time_dict = new Map([
+  ['WOKOIL',1189],
+  ['LOADBOX',6907],
+  ['LOADBOXF',6907],
+  ['POURBOX',4000],
+  ['POURBOXF',4000],
+  ['PSDS',8628],
+  ['PLQS',3025],
+  ['WOKTEMP',1],
+  ['POURFOOD',8053],
+  ['WOKCLEAN',14082],
+  ['WOKY',1],
+  ['END',1],
+  ['INIT',50026],
+  ['START',1],
+  ['WAIT',1]
+]);
 let filename = "example.json";
 var xmlhttp = new XMLHttpRequest();
 let requestNum=0;
@@ -6,7 +40,7 @@ let items = [];
 xmlhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
       
-      if(requestNum<1){//
+      if(requestNum<1){//when receive 1st request
         myObj = JSON.parse(this.responseText);
       }
       document.getElementById("name").innerHTML = myObj.name;
@@ -20,7 +54,8 @@ xmlhttp.onreadystatechange = function() {
         showTimeLine();
         requestNum+=1;
       }
-      //change other information
+
+      //change other information when click the botton
       document.getElementById("nameButton").onclick = async function() {
         const {
           value: name
@@ -68,6 +103,8 @@ xmlhttp.onreadystatechange = function() {
         }
 
       };
+
+      //save recipe
       document.getElementById("saveButton").onclick = function() {
         
         var data = new FormData();
@@ -98,27 +135,31 @@ xmlhttp.onreadystatechange = function() {
 
   //function to show timeline
   function showTimeLine() {
-      // DOM element where the Timeline will be attached
+
+      // DOMelement where the Timeline will be attached
       var container = document.getElementById('visualization');
+
+
       let startTime = new Date(2020, 0, 1, 0, 0, 0);
       let endTime = new Date(2020, 0, 1, 0, 5, 0);
-      let length = 5000;
       for (let i = 0; i < myObj.actions.length; i++) {
         let tempTime = myObj.actions[i].time;
+        let words = myObj.actions[i].command.split(' ');
+        let tempContent = commandToContent(myObj.actions[i].command);
         items[i] = {
           id: i,
-          content: myObj.actions[i].command,
+          content : tempContent,
+          command : myObj.actions[i].command,
+          length : time_dict.get(words[0]),
           start: new Date().setTime(startTime.getTime() + myObj.actions[i].time * 1000),
-          end: new Date().setTime(startTime.getTime() + myObj.actions[i].time * 1000 + length),
-          length: length,
+          end: new Date().setTime(startTime.getTime() + myObj.actions[i].time * 1000 + time_dict.get(words[0])),     
         };
         myObj.actions[i] = {
           id : i,
-          command : items[i].content,
+          command : items[i].command,
           time : tempTime,
         }
       }
-      // Create a DataSet (allows two way data-binding)
     
     
       // Configuration for the Timeline
@@ -165,6 +206,7 @@ xmlhttp.onreadystatechange = function() {
         onAdd: function(item, callback) {
           prettyPrompt('Add item', 'Enter text content for new item:', item.content, function(value) {
             if (value){
+
               //function to generate the id of items
               let tempID;
               for (let i = 0; i <= myObj.actions[i];i++){
@@ -180,15 +222,18 @@ xmlhttp.onreadystatechange = function() {
                 } 
                 }
               }
-
+              
               //set up items to add
               item.id = tempID;
-              item.content = value[0] + ' ' + value[1];
+              item.command = value[0] + ' ' + value[1];
+              item.content = commandToContent(item.command);
+              console.log(item.content);
               item.start = new Date().setTime(startTime.getTime() + value[2] * 1000);
-              item.length = length;
-              item.end = new Date().setTime(startTime.getTime() + value[2] * 1000 + length);
+              let words = item.command.split(' ');
+              item.length = time_dict.get(words[0]);
+              item.end = new Date().setTime(startTime.getTime() + value[2] * 1000 + item.length);
               let action = {
-                command : item.content,
+                command : item.command,
                 time : value[2],
                 id : tempID,
               };
@@ -203,7 +248,8 @@ xmlhttp.onreadystatechange = function() {
         onUpdate: function(item, callback) {
           prettyPrompt('Update item', 'Edit items text:', item.content, function(value) {
             if (value) {
-              item.content = value[0] + ' ' + value[1];
+              item.command = value[0] + ' ' + value[1];
+              item.content = commandToContent(item.command);
               item.start = new Date().setTime(startTime.getTime() + value[2] * 1000);
               item.end = new Date().setTime(startTime.getTime() + value[2] * 1000 + length);
 
@@ -230,7 +276,10 @@ xmlhttp.onreadystatechange = function() {
               //remove the action in myObj.actions
               for (let i=0;i<myObj.actions.length;i++){
                 if (item.id == myObj.actions[i].id){
-                  delete myObj.actions[i];
+                  console.log('delete '+myObj.actions[i].command);
+                  console.log('array length ' + myObj.actions.length);
+                  myObj.actions.splice(i,1);
+                  console.log('array length ' + myObj.actions.length);
                   break;
                 }
               }
@@ -241,6 +290,7 @@ xmlhttp.onreadystatechange = function() {
             }
           });
         },
+
         onMoving: function(item, callback) {
           if ((item.end - item.start) != item.length) {
             if (item.start + item.length - endTime >= 0) {
@@ -277,6 +327,19 @@ xmlhttp.onreadystatechange = function() {
     
       // Create a Timeline
       var timeline = new vis.Timeline(container, items, options);
+
+      function commandToContent(command){
+        let words = command.split(' ');
+        let tempContent;
+        if(words[0] == 'PSDS' || words[0] == 'PLQS'){
+          tempContent = command_dict.get(words[0]).get(words[1]);
+        }
+        else if (words[0] == 'LOADBOX' || 'WOKTEMP' || 'WOKY'){
+          tempContent = command_dict.get(words[0]) + words[1];
+        }
+        else tempContent = command_dict.get(words[0]);
+        return tempContent;
+      }
       async function prettyPrompt(title, text, inputValue, callback) {
         const {
           value: formValues
@@ -284,10 +347,23 @@ xmlhttp.onreadystatechange = function() {
           title: 'Multiple inputs',
           html: 'function' +
             '<select id="swal-input1" class="swal2-input" list="swal-input1" name="swal-input1">' +
-            '<option value="WORKTEMP">WORKTEMP</option>' +
-            '<option value="POURBOX">POURBOX</option>' +
+            '<option value="WOKTEMP">設置溫度</option>' +
+            '<option value="POURBOX">倒盒</option>' +
+            '<option value="WOKOIL">起鑊</option>' +
+            '<option value="LOADBOX">取盒</option>' +
+            '<option value="PSDS">下調料</option>' +
+            '<option value="PLQS">加液體</option>' +
+            '<option value="LOADBOX">取盒</option>' +
+            '<option value="WAIT">翻炒</option>' +
+            '<option value="POURFOOD">上菜</option>' +
+            '<option value="WOKCLEAN">洗鍋</option>' +
+            '<option value="WOKY">設置轉速</option>' +
+            '<option value="END">完成</option>' +
+            '<option value="INIT">初始化</option>' +
             '</select>' +
+            '<if condition="$swal-inpue1 eq "PSDS">' +
             'parameter<input id="swal-input2" class="swal2-input">' +
+            '</if>' +
             'time<input id="swal-input3" class="swal2-input">',
           focusConfirm: false,
           preConfirm: () => {
