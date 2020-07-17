@@ -2,8 +2,8 @@
 	"filename": "example.json",
 	"name": "炒三絲",
 	"id": "41",
-	"version": "33",
-	"modified_date": "Fri Jul 17 2020 14:33:35 GMT+0800 (香港標準時間)",
+	"version": "12",
+	"modified_date": "Fri Jul 17 2020 15:56:48 GMT+0800 (香港標準時間)",
 	"uuid": "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d'",
 	"remarks": "test on v2 machine",
 	"actions": [
@@ -17,7 +17,7 @@
 		},
 		{
 			"command": "WOKTEMP 500",
-			"time": "65"
+			"time": "86"
 		},
 		{
 			"command": "WAIT ",
