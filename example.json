@@ -3,7 +3,7 @@
 	"name": "炒三絲",
 	"id": "41",
 	"version": "33",
-	"modified_date": "Thu Jul 16 2020 16:26:09 GMT+0800 (香港標準時間)",
+	"modified_date": "Fri Jul 17 2020 14:33:35 GMT+0800 (香港標準時間)",
 	"uuid": "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d'",
 	"remarks": "test on v2 machine",
 	"actions": [
@@ -38,6 +38,18 @@
 		{
 			"command": "PLQS 2",
 			"time": "142"
+		},
+		{
+			"command": "PSDS 1 ",
+			"time": "175"
+		},
+		{
+			"command": "PSDS 3 ",
+			"time": "40"
+		},
+		{
+			"command": "PSDS 3 ",
+			"time": "220"
 		}
 	]
 }

@@ -18,18 +18,6 @@
         <option value="END">完成</option>
         <option value="INIT">初始化</option>
         </select>
-        <span id="input2"></span>
-        <script>
-            let action = document.getElementById("swal-input1").innerHTML;
-            if (action == "PSDS"){
-                console.log(1);
-                document.getElementById("input2").innerHTML = '<select id=swal-input2 class="swal2-input" list="swal-input2" name="swal-input2">'+
-                                                                '<option value = 0>假的</option>'+
-                                                                '<option value = 1>下糖</option>';
-            }
-            else{
-                document.getElementById("input2").innerHTML = 'parameter<input id="swal-input2" class="swal2-input">';
-            }   
-        </script>
+        <select id=swal-input2 class="swal2-input" list="swal-input2" name="swal-input2">
         time<input id="swal-input3" class="swal2-input">
 </html>

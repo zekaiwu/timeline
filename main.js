@@ -204,9 +204,9 @@ xmlhttp.onreadystatechange = function() {
           }
         },
         onAdd: function(item, callback) {
-          prettyPrompt('Add item', 'Enter text content for new item:', item.content, function(value) {
+          addPrompt('Add item', 'Enter text content for new item:', item.content, function(value) {
+            console.log(value);
             if (value){
-
               //function to generate the id of items
               let tempID;
               for (let i = 0; i <= myObj.actions[i];i++){
@@ -225,7 +225,12 @@ xmlhttp.onreadystatechange = function() {
               
               //set up items to add
               item.id = tempID;
-              item.command = value[0] + ' ' + value[1];
+              if (value[0] == 'WOKTEMP' || value[0] == 'WOKY' || value[0] == 'POURBOX' || value[0] == 'LOADBOX'){
+                item.command = value[0] + ' ' + value[1];
+              }
+              else{
+                item.command = value[0];
+              }
               item.content = commandToContent(item.command);
               console.log(item.content);
               item.start = new Date().setTime(startTime.getTime() + value[2] * 1000);
@@ -246,7 +251,7 @@ xmlhttp.onreadystatechange = function() {
         },
     
         onUpdate: function(item, callback) {
-          prettyPrompt('Update item', 'Edit items text:', item.content, function(value) {
+          updatePrompt('Update item', 'Edit items text:', item.content, function(value) {
             if (value) {
               item.command = value[0] + ' ' + value[1];
               item.content = commandToContent(item.command);
@@ -340,7 +345,63 @@ xmlhttp.onreadystatechange = function() {
         else tempContent = command_dict.get(words[0]);
         return tempContent;
       }
-      async function prettyPrompt(title, text, inputValue, callback) {
+
+      async function addPrompt(title, text, inputValue, callback) {
+        const {value : p0} = await Swal.fire({
+          title : 'function',
+          input : 'select',
+          inputOptions: {
+            WOKTEMP: '設置溫度',
+            WOKOIL: '起鑊',
+            POURBOX : '倒盒',
+            LOADBOX : '取盒',
+            WAIT : '翻炒',
+            POURFOOD: '上菜',
+            WOKCLEAN: '洗鍋',
+            WOKY :'設置轉速',
+            END : '完成',
+            INIT : '初始化',
+            '調料': {
+              'PSDS 0': '假的',
+              'PSDS 1': '下糖',
+              'PSDS 2': '下鹽',
+              'PSDS 3': '下胡椒',
+              'PSDS 4': '自定調料'
+            },
+            '液體': {
+              'PLQS 0': '假的',
+              'PLQS 1': '加水',
+              'PLQS 2': '下油',
+              'PLQS 3': '3號泵噴出',
+              'PLQS 4': '4號泵噴出',
+              'PLQS 5': '5號泵噴出',
+              'PLQS 6': '芡汁',
+              'PLQS 7': '7號泵噴出',
+              'PLQS 8': '8號泵噴出',
+            },
+          }
+        })
+        if(p0){
+          let result = [];
+          result.push(p0);
+          if (p0 == 'WOKTEMP' || p0 == 'WOKY' || p0 == 'POURBOX' || p0 == 'LOADBOX'){
+            const {value : p1} = await Swal.fire({
+              title : 'parameter',
+              input : 'text',
+            })
+            result.push(p1);
+          }
+          else result.push("");
+          const {value : p2} = await Swal.fire({
+            title : 'time',
+            input : 'text',
+          })
+          result.push(p2);
+          callback(result);
+        }
+      }
+
+      async function updatePrompt(title, text, inputValue, callback) {
         const {
           value: formValues
         } = await Swal.fire({
@@ -353,7 +414,6 @@ xmlhttp.onreadystatechange = function() {
             '<option value="LOADBOX">取盒</option>' +
             '<option value="PSDS">下調料</option>' +
             '<option value="PLQS">加液體</option>' +
-            '<option value="LOADBOX">取盒</option>' +
             '<option value="WAIT">翻炒</option>' +
             '<option value="POURFOOD">上菜</option>' +
             '<option value="WOKCLEAN">洗鍋</option>' +
@@ -378,7 +438,6 @@ xmlhttp.onreadystatechange = function() {
           callback(formValues);
         }
       }
-    
       function prettyConfirm(title, text, callback) {
         Swal.fire({
           title: 'Are you sure?',
