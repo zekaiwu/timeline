@@ -361,7 +361,7 @@ function main() {
       if (words[0] == 'PSDS' || words[0] == 'PLQS') {
         tempContent = command_dict.get(words[0]).get(words[1]);
       }
-      else if (words[0] == 'LOADBOX' || words[0] == 'WOKTEMP' || words[0] == 'WOKY') {
+      else if (words[0] == 'LOADBOX' || words[0] == 'WOKTEMP' || words[0] == 'WOKY' || words[0] == 'POUR') {
         tempContent = command_dict.get(words[0]) + words[1];
       }
       else tempContent = command_dict.get(words[0]);
@@ -432,7 +432,6 @@ function main() {
         focusConfirm: false,
         preConfirm: () => {
           return [
-            document.getElementById('swal-input1').value,
             document.getElementById('swal-input2').value,
             document.getElementById('swal-input3').value,
           ]
@@ -461,12 +460,19 @@ function main() {
   }
 }
 function generateHTML(command){
-  let words = command.split(' ');
-  let result = "";
-  let content = command_dict.get(words[0]);
-  result+=content;
-  if (words[0] == 'LOADBOX' || words[0] == 'WOKTEMP' || words[0] == 'WOKY'){
-    result +='parameter<input id="swal-input2" class="swal2-input"></input>';
-}
-console.log(result);
+  let words =command.split(' '); 
+  let result = '<!doctype html>'+
+  '<html>'+
+  '<head>'+
+  '</head>'+
+  '<body>';
+  if (words[0] == "WOKTEMP" || words[0] == "LOADBOX" || words[0] == "POURBOX" || words[0]=="WOKY"){
+    result +=  'parameter<input id=swal-input2 class="swal2-input" name="swal-input2">';
+  }
+  else{
+    result += '<span id=swal-input2 value=""></span>';
+  }
+  result += 'time<input id="swal-input3" class="swal2-input">'+
+  '</html>';
+return result;
 }
