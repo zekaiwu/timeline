@@ -1,6 +1,7 @@
 <!doctype html>
 <html>
 <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
   <script src="https://cdn.jsdelivr.net/npm/promise-polyfill@8/dist/polyfill.js"></script>
   <script type="text/javascript" src="//unpkg.com/vis-timeline@latest/standalone/umd/vis-timeline-graph2d.min.js"></script>
@@ -23,16 +24,16 @@
 </head>
 
 <body>
+  select your file<input type='file' accept='' onchange='openFile(event)'><br>
   name: <span id="name"></span><button id="nameButton">change</button><br>
   id: <span id="id"></span><br>
   version: <span id="version"></span><button id = "versionButton">change</button><br>
   modified date: <span id="modified_date"></span><br>
   uuid: <span id="uuid"></span><br>
   remarks: <span id=remarks></span><button id="remarksBotton">change</button><br>
-  <button id="saveButton">save</button><button id="openButton">open</button><br>
-  <button id="newButton"></button><br>
+  <button id="saveButton">save</button><button id="testButton">test</button><br><br>
   visualization <span id="visualization"></span><br>
-  <script type="module" src="/main.js"></script>
+  <script src="/main.js"></script>
   <div>
     <code>
       <strong>change</strong>

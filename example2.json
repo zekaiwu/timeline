@@ -1,9 +1,9 @@
 {
 	"filename": "example.json",
-	"name": "炒四絲",
+	"name": "炒三絲",
 	"id": "41",
 	"version": "12",
-	"modified_date": "Mon Jul 20 2020 15:31:17 GMT+0800 (香港標準時間)",
+	"modified_date": "Fri Jul 17 2020 15:56:48 GMT+0800 (香港標準時間)",
 	"uuid": "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d'",
 	"remarks": "test on v2 machine",
 	"actions": [
@@ -13,19 +13,19 @@
 		},
 		{
 			"command": "WOKCLEAN ",
-			"time": "51"
+			"time": "222"
 		},
 		{
 			"command": "WOKTEMP 500",
-			"time": "74"
+			"time": "86"
 		},
 		{
 			"command": "WAIT ",
-			"time": "43"
+			"time": "120"
 		},
 		{
 			"command": "PSDS 1",
-			"time": "29"
+			"time": "120"
 		},
 		{
 			"command": "WOKTEMP 1000",
@@ -33,15 +33,15 @@
 		},
 		{
 			"command": "PSDS 2",
-			"time": "48"
+			"time": "232"
 		},
 		{
 			"command": "PLQS 2",
-			"time": "52"
+			"time": "142"
 		},
 		{
 			"command": "PSDS 1 ",
-			"time": "228"
+			"time": "175"
 		},
 		{
 			"command": "PSDS 3 ",
@@ -49,15 +49,7 @@
 		},
 		{
 			"command": "PSDS 3 ",
-			"time": "69"
-		},
-		{
-			"command": "PLQS 2",
-			"time": "120"
-		},
-		{
-			"command": "POURBOX 3",
-			"time": "120"
+			"time": "220"
 		}
 	]
 }

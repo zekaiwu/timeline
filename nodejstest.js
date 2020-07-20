@@ -10,9 +10,7 @@ http.createServer(function (request, response) {
         console.error(err);
       }).on('data', (chunk) => {
         body.push(chunk);
-        //console.log(chunk.get("name"));
       }).on('end', () => {
-
         //get information
         body = Buffer.concat(body).toString();
         lines = body.split(/\r\n|\r|\n/); 

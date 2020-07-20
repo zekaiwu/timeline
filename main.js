@@ -32,12 +32,19 @@ let time_dict = new Map([
   ['START', 1],
   ['WAIT', 1]
 ]);
-let filename = "example.json";
 var xmlhttp = new XMLHttpRequest();
-document.getElementById("openButton").onclick = function () {
-  location.reload();
+let filename;
+let firstDraw = true;
+let openFile = function(event) {
+  var input = event.target;
+  var reader = new FileReader();
+  reader.onload = function(){
+    var dataURL = reader.result;
+  };
+  reader.readAsDataURL(input.files[0]);
+  filename = input.files[0].name;
+  main();
 };
-main();
 function main() {
   let requestNum = 0;
   let myObj;
@@ -61,6 +68,9 @@ function main() {
       }
 
       //change other information when click the botton
+      document.getElementById("testButton").onclick = async function () {
+        timeline.destroy();
+      };
       document.getElementById("nameButton").onclick = async function () {
         const {
           value: name
@@ -111,7 +121,6 @@ function main() {
 
       //save recipe
       document.getElementById("saveButton").onclick = function () {
-        let confirm = false;
         Swal.fire({
           title: 'Save?',
           icon: 'warning',
@@ -121,29 +130,24 @@ function main() {
           confirmButtonText: 'Save'
         }).then((result) => {
           if (result.value) {
-            confirm = true;
+            let data = new FormData();
+            data.append('filename', "example.json");
+            data.append('name', myObj.name);
+            data.append('id', myObj.id);
+            data.append('version', myObj.version);
+
+            let currentTime = new Date();
+            data.append('modified_date', currentTime.toString());
+            data.append('uuid', myObj.uuid);
+            data.append('remarks', myObj.remarks);
+            for (let i = 0; i < myObj.actions.length; i++) {
+              data.append('actions', myObj.actions[i].command);
+              data.append('actions', myObj.actions[i].time);
+            }
+            xmlhttp.open("POST", "example.json", true);
+            xmlhttp.send(data);
           }
         })
-        if (confirm) {
-          let data = new FormData();
-          data.append('filename', "example.json");
-          data.append('name', myObj.name);
-          data.append('id', myObj.id);
-          data.append('version', myObj.version);
-
-          let currentTime = new Date();
-          data.append('modified_date', currentTime.toString());
-          data.append('uuid', myObj.uuid);
-          data.append('remarks', myObj.remarks);
-          for (let i = 0; i < myObj.actions.length; i++) {
-            data.append('actions', myObj.actions[i].command);
-            data.append('actions', myObj.actions[i].time);
-          }
-          xmlhttp.open("POST", "example.json", true);
-          xmlhttp.send(data);
-        }
-      };
-      document.getElementById("newButton").onclick = function () {
       };
     }
   };
@@ -152,7 +156,6 @@ function main() {
 
   //function to show timeline
   function showTimeLine() {
-
     // DOMelement where the Timeline will be attached
     var container = document.getElementById('visualization');
     let startTime = new Date(2020, 0, 1, 0, 0, 0);
@@ -351,17 +354,25 @@ function main() {
 
 
     };
-
+    let timeline;
     // Create a Timeline
-    var timeline = new vis.Timeline(container, items, options);
-
+    if (firstDraw){
+      console.log("firstTimeline")
+      timeline = new vis.Timeline(container, items, options);
+      timeline.redraw();
+      firstDraw = false;
+    }
+    else{
+      console.log("redraw");
+      //timeline.redraw();
+    }
     function commandToContent(command) {
       let words = command.split(' ');
       let tempContent;
       if (words[0] == 'PSDS' || words[0] == 'PLQS') {
         tempContent = command_dict.get(words[0]).get(words[1]);
       }
-      else if (words[0] == 'LOADBOX' || words[0] == 'WOKTEMP' || words[0] == 'WOKY' || words[0] == 'POUR') {
+      else if (words[0] == 'LOADBOX' || words[0] == 'WOKTEMP' || words[0] == 'WOKY' || words[0] == 'POURBOX') {
         tempContent = command_dict.get(words[0]) + words[1];
       }
       else tempContent = command_dict.get(words[0]);
@@ -372,6 +383,7 @@ function main() {
       const { value: p0 } = await Swal.fire({
         title: 'function',
         input: 'select',
+        showCancelButton: true,
         inputOptions: {
           WOKTEMP: '設置溫度',
           WOKOIL: '起鑊',
@@ -428,6 +440,7 @@ function main() {
         value: formValues
       } = await Swal.fire({
         title: 'Multiple inputs',
+        showCancelButton: true,
         html: generateHTML(inputValue),
         focusConfirm: false,
         preConfirm: () => {
