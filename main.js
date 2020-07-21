@@ -32,6 +32,7 @@ let time_dict = new Map([
   ['START', 1],
   ['WAIT', 1]
 ]);
+
 var xmlhttp = new XMLHttpRequest();
 let filename;
 let myObj;
@@ -475,6 +476,7 @@ document.getElementById("saveButton").onclick = async function () {
   }).then((result) => {
     if (result.value) {
       myObj.uuid = uuidv4();
+      myObj.version = parseInt(myObj.version)+1;
       sendObj(filename, myObj);
     }
   })
@@ -498,5 +500,6 @@ let saveAs = function(event){
   reader.readAsDataURL(input.files[0]);
   filename = input.files[0].name;
   myObj.uuid = uuidv4();
+  myObj.version = parseInt(myObj.version)+1;
   sendObj(filename,myObj);
 }

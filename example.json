@@ -2,9 +2,9 @@
 	"filename": "example.json",
 	"name": "炒四絲",
 	"id": "41",
-	"version": "12",
-	"modified_date": "Mon Jul 20 2020 17:33:03 GMT+0800 (香港標準時間)",
-	"uuid": "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d'",
+	"version": "2",
+	"modified_date": "Tue Jul 21 2020 15:58:58 GMT+0800 (香港標準時間)",
+	"uuid": "871aa04d-ada6-4d55-a655-bc5e542f51d4",
 	"remarks": "test on v2 machine",
 	"actions": [
 		{
