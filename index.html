@@ -26,14 +26,15 @@
 
 <body>
   select your file<input type='file' accept='' onchange='openFile(event)'><br>
-  name: <span id="name"></span><button id="nameButton">change</button><br>
+  </span><button id="edit">edit</button><br>
+  name: <span id="name"></span><button id="nameButton" disabled>change</button><br>
   id: <span id="id"></span><br>
-  version: <span id="version"></span><button id = "versionButton">change</button><br>
+  version: <span id="version"></span><button id = "versionButton" disabled>change</button><br>
   modified date: <span id="modified_date"></span><br>
   uuid: <span id="uuid"></span><br>
-  remarks: <span id=remarks></span><button id="remarksBotton">change</button><br>
-  <button id="saveButton">save</button>
-  <input type='file' accept='' class="saveAs" onchange='saveAs(event)'><-Save As<br>
+  remarks: <span id=remarks></span><button id="remarksButton" disabled>change</button><br>
+  <button id="saveButton" disabled>save</button>
+  <input type='file' accept='' class="saveAs" onchange='saveAs(event)' disabled><-Save As<br>
   <button id="testButton">destroy</button><br><br>
   visualization <span id="visualization"></span><br>
   <script src="/main.js"></script>

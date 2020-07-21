@@ -444,7 +444,7 @@ document.getElementById("versionButton").onclick = async function () {
   }
 
 };
-document.getElementById("remarksBotton").onclick = async function () {
+document.getElementById("remarksButton").onclick = async function () {
   const {
     value: text
   } = await Swal.fire({
@@ -463,7 +463,24 @@ document.getElementById("remarksBotton").onclick = async function () {
   }
 
 };
-
+document.getElementById("edit").onclick = async function(){
+  Swal.fire({
+    title: 'Edit?',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Yes'
+  }).then((result) => {
+    if (result.value) {
+      document.getElementById("testButton").disabled = false;
+      document.getElementById("nameButton").disabled = false;
+      document.getElementById("versionButton").disabled = false;
+      document.getElementById("remarksButton").disabled = false;
+      document.getElementById("saveButton").disabled = false;
+    }
+  })
+}
 //save recipe
 document.getElementById("saveButton").onclick = async function () {
   Swal.fire({
