@@ -474,6 +474,7 @@ document.getElementById("saveButton").onclick = async function () {
     confirmButtonText: 'Save'
   }).then((result) => {
     if (result.value) {
+      myObj.uuid = uuidv4();
       sendObj(filename, myObj);
     }
   })
@@ -496,5 +497,6 @@ let saveAs = function(event){
   };
   reader.readAsDataURL(input.files[0]);
   filename = input.files[0].name;
+  myObj.uuid = uuidv4();
   sendObj(filename,myObj);
 }
