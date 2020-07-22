@@ -5,9 +5,9 @@
   <script src="https://unpkg.com/uuid@latest/dist/umd/uuidv4.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
   <script src="https://cdn.jsdelivr.net/npm/promise-polyfill@8/dist/polyfill.js"></script>
-  <script type="text/javascript" src="//unpkg.com/vis-timeline@latest/standalone/umd/vis-timeline-graph2d.min.js"></script>
-  <link href="//unpkg.com/vis-timeline@latest/styles/vis-timeline-graph2d.min.css" rel="stylesheet" type="text/css" />
-  <style type="text/css">
+  <script src="/node_modules/vis-timeline/standalone/umd/vis-timeline-graph2d.min.js"></script>
+  <link href="/node_modules/vis-timeline/styles/vis-timeline-graph2d.min.css" rel="stylesheet" type="text/css" />
+  <style type="text/css"> 
     #visualization {
       width: 1500px;
       height: 500px;
@@ -35,7 +35,8 @@
   remarks: <span id=remarks></span><button id="remarksButton" disabled>change</button><br>
   <button id="saveButton" disabled>save</button>
   <input type='file' accept='' class="saveAs" onchange='saveAs(event)' disabled><-Save As<br>
-  <button id="testButton">destroy</button><br><br>
+  <button id="destroyButton">destroy</button><br>
+  <button id="testButton">test</button><br><br>
   visualization <span id="visualization"></span><br>
   <script src="/main.js"></script>
   <div>

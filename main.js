@@ -34,13 +34,14 @@ let time_dict = new Map([
 ]);
 
 var xmlhttp = new XMLHttpRequest();
-let filename;
+let filename="example.json";
 let myObj;
 let items = [];
 let firstDraw = true;
 var container = document.getElementById('visualization');
 let startTime = new Date(2020, 0, 1, 0, 0, 0);
 let endTime = new Date(2020, 0, 1, 0, 5, 0);
+let timeline;
 // Configuration for the Timeline
 var options = {
   timeAxis: {
@@ -215,8 +216,7 @@ var options = {
 
 
 };
-let timeline = new vis.Timeline(container, items, options);
-timeline.destroy();
+main();
 function main() {
   let requestNum = 0;
   xmlhttp.onreadystatechange = function () {
@@ -271,19 +271,9 @@ function main() {
     else {
       timeline.destroy();
       timeline = new vis.Timeline(container, items, options);
+      timeline.redraw();
     }
-    function commandToContent(command) {
-      let words = command.split(' ');
-      let tempContent;
-      if (words[0] == 'PSDS' || words[0] == 'PLQS') {
-        tempContent = command_dict.get(words[0]).get(words[1]);
-      }
-      else if (words[0] == 'LOADBOX' || words[0] == 'WOKTEMP' || words[0] == 'WOKY' || words[0] == 'POURBOX') {
-        tempContent = command_dict.get(words[0]) + words[1];
-      }
-      else tempContent = command_dict.get(words[0]);
-      return tempContent;
-    }
+    
   }
 }
 async function addPrompt(title, text, inputValue, callback) {
@@ -412,8 +402,20 @@ function sendObj(filename, myObj) {
   xmlhttp.open("POST", "example.json", true);
   xmlhttp.send(data);
 }
+function commandToContent(command) {
+  let words = command.split(' ');
+  let tempContent;
+  if (words[0] == 'PSDS' || words[0] == 'PLQS') {
+    tempContent = command_dict.get(words[0]).get(words[1]);
+  }
+  else if (words[0] == 'LOADBOX' || words[0] == 'WOKTEMP' || words[0] == 'WOKY' || words[0] == 'POURBOX') {
+    tempContent = command_dict.get(words[0]) + words[1];
+  }
+  else tempContent = command_dict.get(words[0]);
+  return tempContent;
+}
 //change other information when click the botton
-document.getElementById("testButton").onclick = async function () {
+document.getElementById("destroyButton").onclick = async function () {
   timeline.destroy();
 };
 document.getElementById("nameButton").onclick = async function () {
@@ -480,6 +482,19 @@ document.getElementById("edit").onclick = async function(){
       document.getElementById("saveButton").disabled = false;
     }
   })
+}
+document.getElementById("testButton").onclick = function (){
+  let testItem = {
+    id: 100,
+    content: "測試",
+    command: "WOKOIL",
+    length: time_dict.get("WOKOIL"),
+    start: new Date().setTime(startTime.getTime() + 160 * 1000),
+    end: new Date().setTime(startTime.getTime() + 160 * 1000 + 1000000),
+  }
+  items.push(testItem);
+  console.log(items.length);
+  timeline.setItems(items);
 }
 //save recipe
 document.getElementById("saveButton").onclick = async function () {
