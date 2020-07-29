@@ -32,7 +32,6 @@ let time_dict = new Map([
   ['START', 1],
   ['WAIT', 1]
 ]);
-
 var xmlhttp = new XMLHttpRequest();
 let filename="example.json";
 let myObj;
@@ -41,9 +40,9 @@ let firstDraw = true;
 var container = document.getElementById('visualization');
 let startTime = new Date(2020, 0, 1, 0, 0, 0);
 let endTime = new Date(2020, 0, 1, 0, 5, 0);
-let timeline;
+
 // Configuration for the Timeline
-var options = {
+let options = {
   timeAxis: {
     scale: 'second',
     step: 5
@@ -55,9 +54,14 @@ var options = {
   start: startTime,
   end: endTime,
   height: '500px',
-  editable: true,
+  editable: {
+    add : false,
+    remove : false,
+    updateTime : false,
+    overrideItems : false,
+  },
   itemsAlwaysDraggable: {
-    item: true,
+    item: false,
   },
   format: {
     minorLabels: {
@@ -216,6 +220,8 @@ var options = {
 
 
 };
+let timeline = new vis.Timeline(container, items, options);
+
 main();
 function main() {
   let requestNum = 0;
@@ -240,6 +246,7 @@ function main() {
   };
   xmlhttp.open("GET", filename, true);
   xmlhttp.send();
+  
   function showTimeLine() {
     for (let i = 0; i < myObj.actions.length; i++) {
       let tempTime = myObj.actions[i].time;
@@ -264,13 +271,16 @@ function main() {
 
     // Create a Timeline
     if (firstDraw) {
+      timeline.destroy();
       console.log("firstTimeline")
       timeline = new vis.Timeline(container, items, options);
+      timeline.on('select', onSelect);
       firstDraw = false;
     }
     else {
       timeline.destroy();
       timeline = new vis.Timeline(container, items, options);
+      timeline.on('select', onSelect);
       timeline.redraw();
     }
     
@@ -384,6 +394,44 @@ function generateHTML(command) {
     '</html>';
   return result;
 }
+function addHTML(){
+  let result = 'function' +
+  '<select id="swal-input1" class="swal2-input" list="swal-input1" name="swal-input1">' +
+  '<option value="WOKTEMP">設置溫度</option>' +
+  '<option value="POURBOX">倒盒</option>' +
+  '<option value="WOKOIL">起鑊</option>' +
+  '<option value="LOADBOX">取盒</option>' +
+  '<optgroup label="下調料">' +
+  '<option value="PSDS 0">假的</option>' +
+  '<option value="PSDS 1">下糖</option>' +
+  '<option value="PSDS 2">下鹽</option>' +
+  '<option value="PSDS 3">下胡椒</option>' +
+  '<option value="PSDS 4">下自定調料</option>' +
+  '</optgroup>' +
+  '<optgroup label="加液體">' +
+  '<option value="PLQS 0">假的</option>' +
+  '<option value="PLQS 1">加水</option>' +
+  '<option value="PLQS 2">下油</option>' +
+  '<option value="PLQS 3">3號泵噴出</option>' +
+  '<option value="PLQS 4">4號泵噴出</option>' +
+  '<option value="PLQS 5">5號泵噴出</option>' +
+  '<option value="PLQS 6">勾汁</option>' +
+  '<option value="PLQS 7">7號泵噴出</option>' +
+  '<option value="PLQS 8">8號泵噴出</option>' +
+  '</optgroup>' +
+  '<option value="LOADBOX">取盒</option>' +
+  '<option value="WAIT">翻炒</option>' +
+  '<option value="POURFOOD">上菜</option>' +
+  '<option value="WOKCLEAN">洗鍋</option>' +
+  '<option value="WOKY">設置轉速</option>' +
+  '<option value="END">完成</option>' +
+  '<option value="INIT">初始化</option>' +
+  '</select>' +
+  'parameter<input id="swal-input2" class="swal2-input">' +
+  '</if>' +
+  'time<input id="swal-input3" class="swal2-input">';
+  return result;
+}
 function sendObj(filename, myObj) {
   let data = new FormData();
   data.append('filename', filename);
@@ -475,27 +523,100 @@ document.getElementById("edit").onclick = async function(){
     confirmButtonText: 'Yes'
   }).then((result) => {
     if (result.value) {
-      document.getElementById("testButton").disabled = false;
       document.getElementById("nameButton").disabled = false;
       document.getElementById("versionButton").disabled = false;
       document.getElementById("remarksButton").disabled = false;
       document.getElementById("saveButton").disabled = false;
+      document.getElementById("saveAs").disabled = false;
+      document.getElementById("addButton").disabled = false;
+      document.getElementById("updateButton").disabled = false;
+      options.editable = {
+        add : false,
+        remove : true,
+        updateTime : true,
+        overrideItems : true,
+      };
+      options.itemsAlwaysDraggable = {item : true};
+      timeline.destroy();
+      timeline = new vis.Timeline(container, items, options);
+      timeline.on('select', onSelect);
     }
   })
-}
-document.getElementById("testButton").onclick = function (){
-  let testItem = {
-    id: 100,
-    content: "測試",
-    command: "WOKOIL",
-    length: time_dict.get("WOKOIL"),
-    start: new Date().setTime(startTime.getTime() + 160 * 1000),
-    end: new Date().setTime(startTime.getTime() + 160 * 1000 + 1000000),
+};
+document.getElementById("addButton").onclick = async function (){
+  const {
+    value: formValues
+  } = await Swal.fire({
+    title: 'Multiple inputs',
+    showCancelButton: true,
+    html: addHTML("WOKOIL"),
+    focusConfirm: false,
+    preConfirm: () => {
+      let t = document.getElementById('swal-input3').value;
+      let p1 = document.getElementById('swal-input1').value;
+      let p2 = document.getElementById('swal-input2').value;
+      let words = p1.split(' ');
+      let result;
+      if (words[0] == 'PSDS' || words[0] == 'PLQS'){
+        result = {
+          command : p1,
+          time : t
+        }
+        return result;
+      }
+      else if(p1 == 'WOKTEMP' || p1 == 'WOKY' || p1 == 'POURBOX' || p1 == 'LOADBOX'){
+        result = {
+          command : p1 + ' ' + p2,
+          time : t
+        }
+        return result;
+      }
+      else{
+        result = {
+          command : p1,
+          time : t
+        }
+        return result;
+      }
+    }
+  })
+  if (formValues) {
+    //console.log(inputValue);
+    console.log(formValues.command);
+    let tempID;
+    for(let i=0; i<=myObj.actions.length;i++){
+      let occupied = false;
+      for(let j=0;j<myObj.actions.length;j++){
+        if (myObj.actions[j].id == i){
+          occupied = true;
+          break;
+        }
+      }
+      if(!occupied){
+        tempID = i;
+        break;
+      }
+    }
+    let newAction = {
+      id: tempID,
+      command: formValues.command,
+      time: formValues.time,
+    };
+    myObj.actions.push(newAction);
+    let words = formValues.command.split(' ');
+    let newItem = {
+      id: tempID,
+      content: commandToContent(formValues.command),
+      command: formValues.command,
+      length: time_dict.get(words[0]),
+      start: new Date().setTime(startTime.getTime() + formValues.time * 1000),
+      end: new Date().setTime(startTime.getTime() + formValues.time * 1000 + time_dict.get(words[0])),
+    };
+    items.push(newItem);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
+    timeline.setItems(items);
   }
-  items.push(testItem);
-  console.log(items.length);
-  timeline.setItems(items);
-}
+  
+};
 //save recipe
 document.getElementById("saveButton").onclick = async function () {
   Swal.fire({
@@ -535,3 +656,47 @@ let saveAs = function(event){
   myObj.version = parseInt(myObj.version)+1;
   sendObj(filename,myObj);
 }
+
+function onSelect(properties) {
+  document.getElementById("updateButton").onclick = async function() {
+    let id = properties.items[0];
+    let ti,ti2;
+    console.log(id);
+    for(let i=0; i<items.length;i++){
+      if(items[i].id == id)
+        ti = i;
+    }
+    for(let i=0; i<myObj.actions.length;i++){
+      if(myObj.actions[i].id == id)
+        ti2 = i;
+    }
+    const {
+      value: formValues
+    } = await Swal.fire({
+      title: 'Multiple inputs',
+      showCancelButton: true,
+      html: generateHTML(items[ti].command),
+      focusConfirm: false,
+      preConfirm: () => {
+        return [
+          document.getElementById('swal-input2').value,
+          document.getElementById('swal-input3').value,
+        ]
+      }
+    })
+    if (formValues) {
+      let words = items[ti].command.split(' ');
+      if  (words[0] == 'WOKTEMP' || words[0] == 'WOKY' || words[0] == 'POURBOX' || words[0] == 'LOADBOX'){
+        items[ti].command = words[0] + ' ' + formValues[0];
+      }
+      items[ti].content = commandToContent(items[ti].command);
+      myObj.actions[ti2].command = items[ti].command;
+      if (formValues[1]){
+        items[ti].start = new Date().setTime(startTime.getTime() + formValues[1] * 1000);
+        items[ti].end = new Date().setTime(startTime.getTime() + formValues[1] * 1000 + items[ti].length);
+        myObj.actions[ti2] = formValues[1];
+      }
+      timeline.setItems(items);
+    }
+  }
+};

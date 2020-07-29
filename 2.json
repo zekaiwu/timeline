@@ -1,10 +1,10 @@
 {
-	"filename": "example.json",
+	"filename": "2.json",
 	"name": "炒四絲",
 	"id": "41",
-	"version": "6",
-	"modified_date": "Tue Jul 28 2020 15:07:59 GMT+0800 (香港標準時間)",
-	"uuid": "58260a4a-76d0-41ea-85f4-cc08e3c8090d",
+	"version": "8",
+	"modified_date": "Tue Jul 28 2020 15:52:07 GMT+0800 (香港標準時間)",
+	"uuid": "1e7b76d1-18d7-442e-97cc-e619d484ca6f",
 	"remarks": "test on v2 machine",
 	"actions": [
 		{
@@ -28,8 +28,8 @@
 			"time": "29"
 		},
 		{
-			"command": "WOKTEMP 1000",
-			"time": "9"
+			"command": "undefined",
+			"time": "undefined"
 		},
 		{
 			"command": "PSDS 2",
@@ -61,7 +61,7 @@
 		},
 		{
 			"command": "WOKTEMP 123",
-			"time": "123"
+			"time": "108"
 		}
 	]
 }
