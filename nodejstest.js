@@ -19,7 +19,7 @@ http.createServer(function (request, response) {
         for(let i=31;i<lines.length;i+=8){
             actions[j] = {
                 command : lines[i],
-                time :lines[i+4],
+                time :parseInt(lines[i+4]),
             };
             j+=1;
         }

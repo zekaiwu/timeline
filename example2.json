@@ -2,54 +2,54 @@
 	"filename": "example2.json",
 	"name": "炒三絲",
 	"id": "41",
-	"version": "2",
-	"modified_date": "Wed Jul 22 2020 14:23:35 GMT+0800 (香港標準時間)",
-	"uuid": "f4971d0d-6745-4a71-a743-c2f573baaea6",
+	"version": "3",
+	"modified_date": "Wed Jul 29 2020 19:20:23 GMT+0800 (香港標準時間)",
+	"uuid": "8dac06f4-94d1-42c2-bbe8-c3d8181efff1",
 	"remarks": "test on v2 machine",
 	"actions": [
 		{
 			"command": "WOKOIL ",
-			"time": "0"
+			"time": 0
 		},
 		{
 			"command": "WOKCLEAN ",
-			"time": "74"
+			"time": 74
 		},
 		{
 			"command": "WOKTEMP 500",
-			"time": "86"
+			"time": 86
 		},
 		{
 			"command": "WAIT ",
-			"time": "95"
+			"time": 95
 		},
 		{
 			"command": "PSDS 1",
-			"time": "31"
+			"time": 31
 		},
 		{
 			"command": "WOKTEMP 1000",
-			"time": "9"
+			"time": 9
 		},
 		{
 			"command": "PSDS 2",
-			"time": "59"
+			"time": 59
 		},
 		{
 			"command": "PLQS 2",
-			"time": "60"
+			"time": 60
 		},
 		{
 			"command": "PSDS 1 ",
-			"time": "35"
+			"time": 35
 		},
 		{
 			"command": "PSDS 3 ",
-			"time": "40"
+			"time": 40
 		},
 		{
 			"command": "PSDS 3 ",
-			"time": "64"
+			"time": 64
 		}
 	]
 }
