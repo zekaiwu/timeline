@@ -1,3 +1,4 @@
+
 let command_dict = new Map([
   ['WOKOIL', '起鑊'],
   ['LOADBOX', '取盒'],
@@ -33,7 +34,7 @@ let time_dict = new Map([
   ['WAIT', 1]
 ]);
 var xmlhttp = new XMLHttpRequest();
-let filename="example.json";
+let filename = "example.json";
 let myObj;
 let items = [];
 let firstDraw = true;
@@ -55,10 +56,10 @@ let options = {
   end: endTime,
   height: '500px',
   editable: {
-    add : false,
-    remove : false,
-    updateTime : false,
-    overrideItems : false,
+    add: false,
+    remove: false,
+    updateTime: false,
+    overrideItems: false,
   },
   itemsAlwaysDraggable: {
     item: false,
@@ -246,7 +247,7 @@ function main() {
   };
   xmlhttp.open("GET", filename, true);
   xmlhttp.send();
-  
+
   function showTimeLine() {
     for (let i = 0; i < myObj.actions.length; i++) {
       let tempTime = myObj.actions[i].time;
@@ -283,7 +284,7 @@ function main() {
       timeline.on('select', onSelect);
       timeline.redraw();
     }
-    
+
   }
 }
 async function addPrompt(title, text, inputValue, callback) {
@@ -377,6 +378,11 @@ function prettyConfirm(title, text, callback) {
     }
   })
 }
+function alertMaxAction() {
+  Swal.fire(
+    'Maximun amount of action is 255'
+  )
+}
 function generateHTML(command) {
   let words = command.split(' ');
   let result = '<!doctype html>' +
@@ -394,42 +400,42 @@ function generateHTML(command) {
     '</html>';
   return result;
 }
-function addHTML(){
+function addHTML() {
   let result = 'function' +
-  '<select id="swal-input1" class="swal2-input" list="swal-input1" name="swal-input1">' +
-  '<option value="WOKTEMP">設置溫度</option>' +
-  '<option value="POURBOX">倒盒</option>' +
-  '<option value="WOKOIL">起鑊</option>' +
-  '<option value="LOADBOX">取盒</option>' +
-  '<optgroup label="下調料">' +
-  '<option value="PSDS 0">假的</option>' +
-  '<option value="PSDS 1">下糖</option>' +
-  '<option value="PSDS 2">下鹽</option>' +
-  '<option value="PSDS 3">下胡椒</option>' +
-  '<option value="PSDS 4">下自定調料</option>' +
-  '</optgroup>' +
-  '<optgroup label="加液體">' +
-  '<option value="PLQS 0">假的</option>' +
-  '<option value="PLQS 1">加水</option>' +
-  '<option value="PLQS 2">下油</option>' +
-  '<option value="PLQS 3">3號泵噴出</option>' +
-  '<option value="PLQS 4">4號泵噴出</option>' +
-  '<option value="PLQS 5">5號泵噴出</option>' +
-  '<option value="PLQS 6">勾汁</option>' +
-  '<option value="PLQS 7">7號泵噴出</option>' +
-  '<option value="PLQS 8">8號泵噴出</option>' +
-  '</optgroup>' +
-  '<option value="LOADBOX">取盒</option>' +
-  '<option value="WAIT">翻炒</option>' +
-  '<option value="POURFOOD">上菜</option>' +
-  '<option value="WOKCLEAN">洗鍋</option>' +
-  '<option value="WOKY">設置轉速</option>' +
-  '<option value="END">完成</option>' +
-  '<option value="INIT">初始化</option>' +
-  '</select>' +
-  'parameter<input id="swal-input2" class="swal2-input">' +
-  '</if>' +
-  'time<input id="swal-input3" class="swal2-input">';
+    '<select id="swal-input1" class="swal2-input" list="swal-input1" name="swal-input1">' +
+    '<option value="WOKTEMP">設置溫度</option>' +
+    '<option value="POURBOX">倒盒</option>' +
+    '<option value="WOKOIL">起鑊</option>' +
+    '<option value="LOADBOX">取盒</option>' +
+    '<optgroup label="下調料">' +
+    '<option value="PSDS 0">假的</option>' +
+    '<option value="PSDS 1">下糖</option>' +
+    '<option value="PSDS 2">下鹽</option>' +
+    '<option value="PSDS 3">下胡椒</option>' +
+    '<option value="PSDS 4">下自定調料</option>' +
+    '</optgroup>' +
+    '<optgroup label="加液體">' +
+    '<option value="PLQS 0">假的</option>' +
+    '<option value="PLQS 1">加水</option>' +
+    '<option value="PLQS 2">下油</option>' +
+    '<option value="PLQS 3">3號泵噴出</option>' +
+    '<option value="PLQS 4">4號泵噴出</option>' +
+    '<option value="PLQS 5">5號泵噴出</option>' +
+    '<option value="PLQS 6">勾汁</option>' +
+    '<option value="PLQS 7">7號泵噴出</option>' +
+    '<option value="PLQS 8">8號泵噴出</option>' +
+    '</optgroup>' +
+    '<option value="LOADBOX">取盒</option>' +
+    '<option value="WAIT">翻炒</option>' +
+    '<option value="POURFOOD">上菜</option>' +
+    '<option value="WOKCLEAN">洗鍋</option>' +
+    '<option value="WOKY">設置轉速</option>' +
+    '<option value="END">完成</option>' +
+    '<option value="INIT">初始化</option>' +
+    '</select>' +
+    'parameter<input id="swal-input2" class="swal2-input">' +
+    '</if>' +
+    'time<input id="swal-input3" class="swal2-input">';
   return result;
 }
 function sendObj(filename, myObj) {
@@ -463,9 +469,6 @@ function commandToContent(command) {
   return tempContent;
 }
 //change other information when click the botton
-document.getElementById("destroyButton").onclick = async function () {
-  timeline.destroy();
-};
 document.getElementById("nameButton").onclick = async function () {
   const {
     value: name
@@ -494,6 +497,20 @@ document.getElementById("versionButton").onclick = async function () {
   }
 
 };
+document.getElementById("idButton").onclick = async function () {
+  const {
+    value: id
+  } = await Swal.fire({
+    input: 'text',
+    inputPlaceholder: 'Enter the id'
+  })
+
+  if (id) {
+    myObj.id = id;
+    document.getElementById("id").innerHTML = myObj.id;
+  }
+
+};
 document.getElementById("remarksButton").onclick = async function () {
   const {
     value: text
@@ -513,7 +530,7 @@ document.getElementById("remarksButton").onclick = async function () {
   }
 
 };
-document.getElementById("edit").onclick = async function(){
+document.getElementById("edit").onclick = async function () {
   Swal.fire({
     title: 'Edit?',
     icon: 'warning',
@@ -527,95 +544,100 @@ document.getElementById("edit").onclick = async function(){
       document.getElementById("versionButton").disabled = false;
       document.getElementById("remarksButton").disabled = false;
       document.getElementById("saveButton").disabled = false;
-      document.getElementById("saveAs").disabled = false;
+      //document.getElementById("saveAs").disabled = false;
       document.getElementById("addButton").disabled = false;
       document.getElementById("updateButton").disabled = false;
+      document.getElementById("idButton").disabled = false;
       options.editable = {
-        add : false,
-        remove : true,
-        updateTime : true,
-        overrideItems : true,
+        add: false,
+        remove: true,
+        updateTime: true,
+        overrideItems: true,
       };
-      options.itemsAlwaysDraggable = {item : true};
+      options.itemsAlwaysDraggable = { item: true };
       timeline.destroy();
       timeline = new vis.Timeline(container, items, options);
       timeline.on('select', onSelect);
     }
   })
 };
-document.getElementById("addButton").onclick = async function (){
-  const {
-    value: formValues
-  } = await Swal.fire({
-    title: 'Multiple inputs',
-    showCancelButton: true,
-    html: addHTML("WOKOIL"),
-    focusConfirm: false,
-    preConfirm: () => {
-      let t = document.getElementById('swal-input3').value;
-      let p1 = document.getElementById('swal-input1').value;
-      let p2 = document.getElementById('swal-input2').value;
-      let words = p1.split(' ');
-      let result;
-      if (words[0] == 'PSDS' || words[0] == 'PLQS'){
-        result = {
-          command : p1,
-          time : t
+document.getElementById("addButton").onclick = async function () {
+  if (myObj.actions.length >= 255) {
+    alertMaxAction();
+  }
+  else {
+    const {
+      value: formValues
+    } = await Swal.fire({
+      title: 'Multiple inputs',
+      showCancelButton: true,
+      html: addHTML("WOKOIL"),
+      focusConfirm: false,
+      preConfirm: () => {
+        let t = document.getElementById('swal-input3').value;
+        let p1 = document.getElementById('swal-input1').value;
+        let p2 = document.getElementById('swal-input2').value;
+        let words = p1.split(' ');
+        let result;
+        if (words[0] == 'PSDS' || words[0] == 'PLQS') {
+          result = {
+            command: p1,
+            time: t
+          }
+          return result;
         }
-        return result;
-      }
-      else if(p1 == 'WOKTEMP' || p1 == 'WOKY' || p1 == 'POURBOX' || p1 == 'LOADBOX'){
-        result = {
-          command : p1 + ' ' + p2,
-          time : t
+        else if (p1 == 'WOKTEMP' || p1 == 'WOKY' || p1 == 'POURBOX' || p1 == 'LOADBOX') {
+          result = {
+            command: p1 + ' ' + p2,
+            time: t
+          }
+          return result;
         }
-        return result;
-      }
-      else{
-        result = {
-          command : p1,
-          time : t
+        else {
+          result = {
+            command: p1,
+            time: t
+          }
+          return result;
         }
-        return result;
       }
-    }
-  })
-  if (formValues) {
-    //console.log(inputValue);
-    console.log(formValues.command);
-    let tempID;
-    for(let i=0; i<=myObj.actions.length;i++){
-      let occupied = false;
-      for(let j=0;j<myObj.actions.length;j++){
-        if (myObj.actions[j].id == i){
-          occupied = true;
+    })
+    if (formValues) {
+      //console.log(inputValue);
+      console.log(formValues.command);
+      let tempID;
+      for (let i = 0; i <= myObj.actions.length; i++) {
+        let occupied = false;
+        for (let j = 0; j < myObj.actions.length; j++) {
+          if (myObj.actions[j].id == i) {
+            occupied = true;
+            break;
+          }
+        }
+        if (!occupied) {
+          tempID = i;
           break;
         }
       }
-      if(!occupied){
-        tempID = i;
-        break;
-      }
+      let newAction = {
+        id: tempID,
+        command: formValues.command,
+        time: formValues.time,
+      };
+      myObj.actions.push(newAction);
+      let words = formValues.command.split(' ');
+      let newItem = {
+        id: tempID,
+        content: commandToContent(formValues.command),
+        command: formValues.command,
+        length: time_dict.get(words[0]),
+        start: new Date().setTime(startTime.getTime() + formValues.time * 1000),
+        end: new Date().setTime(startTime.getTime() + formValues.time * 1000 + time_dict.get(words[0])),
+      };
+      items.push(newItem);
+      timeline.setItems(items);
     }
-    let newAction = {
-      id: tempID,
-      command: formValues.command,
-      time: formValues.time,
-    };
-    myObj.actions.push(newAction);
-    let words = formValues.command.split(' ');
-    let newItem = {
-      id: tempID,
-      content: commandToContent(formValues.command),
-      command: formValues.command,
-      length: time_dict.get(words[0]),
-      start: new Date().setTime(startTime.getTime() + formValues.time * 1000),
-      end: new Date().setTime(startTime.getTime() + formValues.time * 1000 + time_dict.get(words[0])),
-    };
-    items.push(newItem);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
-    timeline.setItems(items);
   }
-  
 };
 //save recipe
 document.getElementById("saveButton").onclick = async function () {
@@ -629,7 +651,9 @@ document.getElementById("saveButton").onclick = async function () {
   }).then((result) => {
     if (result.value) {
       myObj.uuid = uuidv4();
-      myObj.version = parseInt(myObj.version)+1;
+      myObj.version = parseInt(myObj.version) + 1;
+      filename = myObj.name + 'v' + myObj.version.toString() + '.json';
+      console.log(filename);
       sendObj(filename, myObj);
     }
   })
@@ -644,6 +668,8 @@ let openFile = function (event) {
   filename = input.files[0].name;
   main();
 };
+/*
+<input id="saveAs" type='file' accept='' class="saveAs" onchange='saveAs(event)' disabled></input>
 let saveAs = function(event){
   var input = event.target;
   var reader = new FileReader();
@@ -655,19 +681,19 @@ let saveAs = function(event){
   myObj.uuid = uuidv4();
   myObj.version = parseInt(myObj.version)+1;
   sendObj(filename,myObj);
-}
+}*/
 
 function onSelect(properties) {
-  document.getElementById("updateButton").onclick = async function() {
+  document.getElementById("updateButton").onclick = async function () {
     let id = properties.items[0];
-    let ti,ti2;
+    let ti, ti2;
     console.log(id);
-    for(let i=0; i<items.length;i++){
-      if(items[i].id == id)
+    for (let i = 0; i < items.length; i++) {
+      if (items[i].id == id)
         ti = i;
     }
-    for(let i=0; i<myObj.actions.length;i++){
-      if(myObj.actions[i].id == id)
+    for (let i = 0; i < myObj.actions.length; i++) {
+      if (myObj.actions[i].id == id)
         ti2 = i;
     }
     const {
@@ -686,12 +712,12 @@ function onSelect(properties) {
     })
     if (formValues) {
       let words = items[ti].command.split(' ');
-      if  (words[0] == 'WOKTEMP' || words[0] == 'WOKY' || words[0] == 'POURBOX' || words[0] == 'LOADBOX'){
+      if (words[0] == 'WOKTEMP' || words[0] == 'WOKY' || words[0] == 'POURBOX' || words[0] == 'LOADBOX') {
         items[ti].command = words[0] + ' ' + formValues[0];
       }
       items[ti].content = commandToContent(items[ti].command);
       myObj.actions[ti2].command = items[ti].command;
-      if (formValues[1]){
+      if (formValues[1]) {
         items[ti].start = new Date().setTime(startTime.getTime() + formValues[1] * 1000);
         items[ti].end = new Date().setTime(startTime.getTime() + formValues[1] * 1000 + items[ti].length);
         myObj.actions[ti2] = formValues[1];
