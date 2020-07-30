@@ -14,30 +14,13 @@ http.createServer(function (request, response) {
         //get information
         body = Buffer.concat(body).toString();
         lines = body.split(/\r\n|\r|\n/); 
-        let output,actions = [];
-        let j = 0;
-        for(let i=31;i<lines.length;i+=8){
-            actions[j] = {
-                command : lines[i],
-                time :parseInt(lines[i+4]),
-            };
-            j+=1;
-        }
-        output = {
-            filename : lines[3],
-            name : lines[7],
-            id : lines[11],
-            version : lines[15],
-            modified_date : lines[19],
-            uuid : lines[23],
-            remarks : lines[27],
-            actions : actions,
-        };
-        fs.writeFile(output.filename, JSON.stringify(output,null,"\t"), function (err) {
-            if (err) throw err;
-            console.log('saved!');
-          });
+        let f = lines[3];
+        if (f == "WRITE")
+            write(lines);
+        if (f == "READ")
+            read(lines);
       });
+      response.end("received");
     }
     
     console.log('request ', request.url)
@@ -86,3 +69,28 @@ http.createServer(function (request, response) {
 
 }).listen(3000);
 console.log('Server running at http://127.0.0.1:3000/');
+function write(lines){
+    let output,actions = [];
+        let j = 0;
+        for(let i=35;i<lines.length;i+=8){
+            actions[j] = {
+                command : lines[i],
+                time :parseInt(lines[i+4]),
+            };
+            j+=1;
+        }
+        output = {
+            filename : lines[7],
+            name : lines[11],
+            id : parseInt(lines[15]),
+            version : parseInt(lines[19]),
+            modified_date : lines[23],
+            uuid : lines[27],
+            remarks : lines[31],
+            actions : actions,
+        };
+        fs.writeFile(output.filename, JSON.stringify(output,null,"\t"), function (err) {
+            if (err) throw err;
+            console.log('saved!');
+          });
+}

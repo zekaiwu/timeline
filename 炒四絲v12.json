@@ -1,0 +1,15 @@
+{
+	"filename": "炒四絲v12.json",
+	"name": "炒四絲",
+	"id": 41,
+	"version": 12,
+	"modified_date": "Thu Jul 30 2020 19:00:21 GMT+0800 (香港標準時間)",
+	"uuid": "c8f31449-9b6e-4b7d-bb20-0eec25048cd9",
+	"remarks": "test on v2 machine",
+	"actions": [
+		{
+			"command": "WOKOIL ",
+			"time": 0
+		}
+	]
+}

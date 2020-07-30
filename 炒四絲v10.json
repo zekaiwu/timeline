@@ -1,10 +1,10 @@
 {
-	"filename": "炒四絲v[object HTMLSpanElement].json",
+	"filename": "炒四絲v10.json",
 	"name": "炒四絲",
-	"id": "41",
-	"version": "12",
-	"modified_date": "Thu Jul 30 2020 15:03:18 GMT+0800 (香港標準時間)",
-	"uuid": "aa9f0154-3ddd-4f4e-b4ce-f349cbb0c70e",
+	"id": 41,
+	"version": 10,
+	"modified_date": "Thu Jul 30 2020 19:03:19 GMT+0800 (香港標準時間)",
+	"uuid": "cbab7293-709e-454b-ad30-87823f60913d",
 	"remarks": "test on v2 machine",
 	"actions": [
 		{
@@ -13,31 +13,31 @@
 		},
 		{
 			"command": "WOKCLEAN ",
-			"time": 51
+			"time": 0
 		},
 		{
 			"command": "WOKTEMP 500",
-			"time": 74
+			"time": 0
 		},
 		{
 			"command": "WAIT ",
-			"time": 43
+			"time": 0
 		},
 		{
 			"command": "PSDS 1",
-			"time": 29
+			"time": 0
 		},
 		{
-			"command": "WOKTEMP 1000",
-			"time": 9
+			"command": "undefined",
+			"time": null
 		},
 		{
 			"command": "PSDS 2",
-			"time": 48
+			"time": 0
 		},
 		{
 			"command": "PLQS 2",
-			"time": 82
+			"time": 0
 		},
 		{
 			"command": "PSDS 1 ",
@@ -49,19 +49,19 @@
 		},
 		{
 			"command": "PSDS 3 ",
-			"time": 69
+			"time": 0
 		},
 		{
 			"command": "PLQS 2",
-			"time": 120
+			"time": 0
 		},
 		{
 			"command": "POURBOX 3",
-			"time": 120
+			"time": 0
 		},
 		{
 			"command": "WOKTEMP 123",
-			"time": 123
+			"time": 108
 		}
 	]
 }

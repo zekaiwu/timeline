@@ -34,7 +34,7 @@ let time_dict = new Map([
   ['WAIT', 1]
 ]);
 var xmlhttp = new XMLHttpRequest();
-let filename = "example.json";
+let filename = "example.json",filename1;
 let myObj;
 let items = [];
 let firstDraw = true;
@@ -228,7 +228,7 @@ function main() {
   let requestNum = 0;
   xmlhttp.onreadystatechange = function () {
     if (this.readyState == 4 && this.status == 200) {
-
+      console.log(this.responseText);
       if (requestNum < 1) {//when receive 1st request
         myObj = JSON.parse(this.responseText);
       }
@@ -440,6 +440,7 @@ function addHTML() {
 }
 function sendObj(filename, myObj) {
   let data = new FormData();
+  data.append('f','WRITE');
   data.append('filename', filename);
   data.append('name', myObj.name);
   data.append('id', myObj.id);
@@ -453,7 +454,7 @@ function sendObj(filename, myObj) {
     data.append('actions', myObj.actions[i].command);
     data.append('actions', myObj.actions[i].time);
   }
-  xmlhttp.open("POST", "example.json", true);
+  xmlhttp.open("POST", filename, true);
   xmlhttp.send(data);
 }
 function commandToContent(command) {

@@ -1,10 +1,10 @@
 {
-	"filename": "炒四絲v11.json",
+	"filename": "炒四絲v13.json",
 	"name": "炒四絲",
 	"id": 41,
-	"version": 11,
-	"modified_date": "Thu Jul 30 2020 18:58:49 GMT+0800 (香港標準時間)",
-	"uuid": "07580936-215e-416c-9d72-8ae68562e526",
+	"version": 13,
+	"modified_date": "Thu Jul 30 2020 17:17:43 GMT+0800 (香港標準時間)",
+	"uuid": "b3efc4e8-88e3-4010-9101-1e3ee34dd5e7",
 	"remarks": "test on v2 machine",
 	"actions": [
 		{
@@ -13,7 +13,7 @@
 		},
 		{
 			"command": "WOKCLEAN ",
-			"time": 51
+			"time": 26
 		},
 		{
 			"command": "WOKTEMP 500",
@@ -57,11 +57,11 @@
 		},
 		{
 			"command": "POURBOX 3",
-			"time": 120
+			"time": 41
 		},
 		{
 			"command": "WOKTEMP 123",
-			"time": 123
+			"time": 164
 		}
 	]
 }
