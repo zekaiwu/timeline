@@ -1,30 +1,41 @@
 var http = require('http');
 var fs = require('fs');
 var path = require('path');
+let result;
 var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 const { parse } = require('querystring');
 http.createServer(function (request, response) {
-    if(request.method == 'POST'){
-      let body = [];
-      request.on('error', (err) => {
-        console.error(err);
-      }).on('data', (chunk) => {
-        body.push(chunk);
-      }).on('end', () => {
-        //get information
-        body = Buffer.concat(body).toString();
-        lines = body.split(/\r\n|\r|\n/); 
-        let f = lines[3];
-        if (f == "WRITE")
-            write(lines);
-        if (f == "READ")
-            read(lines);
-      });
-      response.end("received");
+    if (request.method == 'POST') {
+        let body = [];
+        request.on('error', (err) => {
+            console.error(err);
+        }).on('data', (chunk) => {
+            body.push(chunk);
+        }).on('end', () => {
+            //get information
+            body = Buffer.concat(body).toString();
+            lines = body.split(/\r\n|\r|\n/);
+            console.log(lines);
+            let f = lines[3];
+            if (f == "WRITE")
+                write(lines);
+            if (f == "READ")
+                read(lines);
+            if (f == "BOX") {
+                var text = fs.readFileSync('ingredient.json', 'utf8');
+                let ingredients = JSON.parse(text);
+                result = {
+                    name: 'box',
+                    content: ingredients.types[parseInt(lines[7])]
+                };
+            };
+        });
+        console.log(JSON.stringify(result));
+        response.end(JSON.stringify(result));
     }
-    
+
     console.log('request ', request.url)
-    
+
     var filePath = '.' + request.url;
     if (filePath == './') {
         filePath = './index.html';
@@ -48,49 +59,48 @@ http.createServer(function (request, response) {
         '.wasm': 'application/wasm'
     };
     var contentType = mimeTypes[extname] || 'application/octet-stream';
-    fs.readFile(filePath, function(error, content) {
+    fs.readFile(filePath, function (error, content) {
         if (error) {
-            if(error.code == 'ENOENT') {
-                fs.readFile('./404.html', function(error, content) {
+            if (error.code == 'ENOENT') {
+                fs.readFile('./404.html', function (error, content) {
                     response.writeHead(404, { 'Content-Type': 'text/html' });
                     response.end(content, 'utf-8');
                 });
             }
             else {
                 response.writeHead(500);
-                response.end('Sorry, check with the site admin for error: '+error.code+' ..\n');
+                response.end('Sorry, check with the site admin for error: ' + error.code + ' ..\n');
             }
         }
         else {
             response.writeHead(200, { 'Content-Type': contentType });
-            response.end(content, 'utf-8'); 
+            response.end(content, 'utf-8');
         }
     });
-
 }).listen(3000);
 console.log('Server running at http://127.0.0.1:3000/');
-function write(lines){
-    let output,actions = [];
-        let j = 0;
-        for(let i=35;i<lines.length;i+=8){
-            actions[j] = {
-                command : lines[i],
-                time :parseInt(lines[i+4]),
-            };
-            j+=1;
-        }
-        output = {
-            filename : lines[7],
-            name : lines[11],
-            id : parseInt(lines[15]),
-            version : parseInt(lines[19]),
-            modified_date : lines[23],
-            uuid : lines[27],
-            remarks : lines[31],
-            actions : actions,
+function write(lines) {
+    let output, actions = [];
+    let j = 0;
+    for (let i = 35; i < lines.length; i += 8) {
+        actions[j] = {
+            command: lines[i],
+            time: parseInt(lines[i + 4]),
         };
-        fs.writeFile(output.filename, JSON.stringify(output,null,"\t"), function (err) {
-            if (err) throw err;
-            console.log('saved!');
-          });
+        j += 1;
+    }
+    output = {
+        filename: lines[7],
+        name: lines[11],
+        id: parseInt(lines[15]),
+        version: parseInt(lines[19]),
+        modified_date: lines[23],
+        uuid: lines[27],
+        remarks: lines[31],
+        actions: actions,
+    };
+    fs.writeFile(output.filename, JSON.stringify(output, null, "\t"), function (err) {
+        if (err) throw err;
+        console.log('saved!');
+    });
 }

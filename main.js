@@ -34,7 +34,7 @@ let time_dict = new Map([
   ['WAIT', 1]
 ]);
 var xmlhttp = new XMLHttpRequest();
-let filename = "example.json",filename1;
+let filename = "example.json", filename1;
 let myObj;
 let items = [];
 let firstDraw = true;
@@ -228,20 +228,23 @@ function main() {
   let requestNum = 0;
   xmlhttp.onreadystatechange = function () {
     if (this.readyState == 4 && this.status == 200) {
-      console.log(this.responseText);
-      if (requestNum < 1) {//when receive 1st request
-        myObj = JSON.parse(this.responseText);
+      let rec = JSON.parse(this.responseText);
+      if (rec.name == 'box') {
+        showBox(rec);
       }
-      document.getElementById("name").innerHTML = myObj.name;
-      document.getElementById("id").innerHTML = myObj.id;
-      document.getElementById("version").innerHTML = myObj.version;
-      document.getElementById("modified_date").innerHTML = myObj.modified_date;
-      document.getElementById("uuid").innerHTML = myObj.uuid;
-      document.getElementById("remarks").innerHTML = myObj.remarks;
-      //show actions in timeline
-      if (requestNum < 1) {
-        showTimeLine();
-        requestNum += 1;
+      else {
+        myObj = JSON.parse(this.responseText);
+        document.getElementById("name").innerHTML = myObj.name;
+        document.getElementById("id").innerHTML = myObj.id;
+        document.getElementById("version").innerHTML = myObj.version;
+        document.getElementById("modified_date").innerHTML = myObj.modified_date;
+        document.getElementById("uuid").innerHTML = myObj.uuid;
+        document.getElementById("remarks").innerHTML = myObj.remarks;
+        //show actions in timeline
+        if (requestNum < 1) {
+          showTimeLine();
+          requestNum += 1;
+        }
       }
     }
   };
@@ -440,7 +443,7 @@ function addHTML() {
 }
 function sendObj(filename, myObj) {
   let data = new FormData();
-  data.append('f','WRITE');
+  data.append('f', 'WRITE');
   data.append('filename', filename);
   data.append('name', myObj.name);
   data.append('id', myObj.id);
@@ -653,7 +656,7 @@ document.getElementById("saveButton").onclick = async function () {
     if (result.value) {
       myObj.uuid = uuidv4();
       myObj.version = parseInt(myObj.version) + 1;
-      filename = myObj.name + 'v' + myObj.version.toString() + '.json';
+      filename = myObj.id + '_v' + myObj.version.toString() + '.json';
       console.log(filename);
       sendObj(filename, myObj);
     }
@@ -685,18 +688,32 @@ let saveAs = function(event){
 }*/
 
 function onSelect(properties) {
+  let id = properties.items[0];
+  let ti, ti2;
+  for (let i = 0; i < items.length; i++) {//find the selected element in items array
+    if (items[i].id == id)
+      ti = i;
+  }
+  for (let i = 0; i < myObj.actions.length; i++) {//find the selected element in myObj array
+    if (myObj.actions[i].id == id)
+      ti2 = i;
+  }
+  let type;
+  console.log(myObj.actions[ti2]);
+  let words = myObj.actions[ti2].command.split(' ');
+  if (words[0] == "POURBOX" || words[0] == "LOADBOX") {
+    myObj.box.forEach(function myFunction(item, index) {
+      if (item.id == parseInt(words[1]))
+        type = item.type;
+    })
+    let data = new FormData();
+    data.append('f', 'BOX');
+    data.append('type', type);
+    xmlhttp.open("POST", filename, true);
+    xmlhttp.send(data);
+  }
+
   document.getElementById("updateButton").onclick = async function () {
-    let id = properties.items[0];
-    let ti, ti2;
-    console.log(id);
-    for (let i = 0; i < items.length; i++) {
-      if (items[i].id == id)
-        ti = i;
-    }
-    for (let i = 0; i < myObj.actions.length; i++) {
-      if (myObj.actions[i].id == id)
-        ti2 = i;
-    }
     const {
       value: formValues
     } = await Swal.fire({
@@ -712,7 +729,6 @@ function onSelect(properties) {
       }
     })
     if (formValues) {
-      let words = items[ti].command.split(' ');
       if (words[0] == 'WOKTEMP' || words[0] == 'WOKY' || words[0] == 'POURBOX' || words[0] == 'LOADBOX') {
         items[ti].command = words[0] + ' ' + formValues[0];
       }
@@ -727,3 +743,6 @@ function onSelect(properties) {
     }
   }
 };
+function showBox(rec){
+  document.getElementById("boxInfo").innerHTML = rec.content;
+}
