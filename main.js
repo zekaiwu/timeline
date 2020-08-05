@@ -1,20 +1,14 @@
 
 let command_dict = new Map([
   ['WOKOIL', '起鑊'],
-  ['LOADBOX', '取盒'],
-  ['LOADBOXF', '取盒'],
   ['POURBOX', '倒盒'],
-  ['POURBOXF', '倒盒'],
-  ['PSDS', new Map([['0', '假的'], ['1', '下糖'], ['2', '下鹽'], ['3', '胡椒'], ['4', '自定調料']])],
-  ['PLQS', new Map([['0', '假的'], ['1', '加水'], ['2', '下油'], ['3', '3號泵噴出'], ['4', '4號泵噴出'], ['5', '5號泵噴出'],
-  ['6', '芡汁'], ['7', '7號泵噴出'], ['8', '8號泵噴出']])],
+  ['PWATER', '加水'],
+  ['POIL', '下油'],
+  ['PSTARCH', '芡汁'],
   ['WOKTEMP', '設置溫度'],
-  ['WAIT', '翻炒'],
   ['POURFOOD', '上菜'],
   ['WOKCLEAN', '洗鍋'],
   ['WOKY', '設置轉速'],
-  ['END', '完成'],
-  ['INIT', '初始化'],
 ]);
 let time_dict = new Map([
   ['WOKOIL', 1189],
@@ -24,6 +18,9 @@ let time_dict = new Map([
   ['POURBOXF', 4000],
   ['PSDS', 8628],
   ['PLQS', 3025],
+  ['PWATER', 3025],
+  ['POIL', 3025],
+  ['PSTARCH', 3025],
   ['WOKTEMP', 1],
   ['POURFOOD', 8053],
   ['WOKCLEAN', 14082],
