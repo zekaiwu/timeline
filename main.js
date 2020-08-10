@@ -311,9 +311,9 @@ async function addPrompt(title, text, inputValue, callback) {
       WOKY: '設置轉速',
       POURFOOD: '上菜',
       '液體': {
-        'PWATER': '假的',
-        'POIL': '加水',
-        'PSTRACH': '下油',
+        'PWATER': '加水',
+        'POIL': '下油',
+        'PSTRACH': '芡汁',
       },
     }
   })
@@ -401,7 +401,6 @@ function addHTML() {
     '<option value="POURBOX">倒盒</option>' +
     '<option value="WOKOIL">起鑊</option>' +
     '<optgroup label="加液體">' +
-    '<option value="">假的</option>' +
     '<option value="PWATER">加水</option>' +
     '<option value="POIL">下油</option>' +
     '<option value="PSTRACH">芡汁</option>' +
