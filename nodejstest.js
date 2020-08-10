@@ -26,7 +26,9 @@ http.createServer(function (request, response) {
                 let ingredients = JSON.parse(text);
                 result = {
                     name: 'box',
-                    content: ingredients.types[parseInt(lines[7])]
+                    content: ingredients.types[parseInt(lines[7])].name,
+                    weight: ingredients.types[parseInt(lines[7])].weight,
+
                 };
             };
         });

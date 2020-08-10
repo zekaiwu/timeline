@@ -20,40 +20,12 @@
 			"time": 74
 		},
 		{
-			"command": "WAIT ",
-			"time": 43
-		},
-		{
-			"command": "PSDS 1",
+			"command": "PWATER 230",
 			"time": 29
 		},
 		{
 			"command": "WOKTEMP 1000",
 			"time": 9
-		},
-		{
-			"command": "PSDS 2",
-			"time": 48
-		},
-		{
-			"command": "PLQS 2",
-			"time": 82
-		},
-		{
-			"command": "PSDS 1 ",
-			"time": 228
-		},
-		{
-			"command": "PSDS 3 ",
-			"time": 219
-		},
-		{
-			"command": "PSDS 3 ",
-			"time": 69
-		},
-		{
-			"command": "PLQS 2",
-			"time": 120
 		},
 		{
 			"command": "POURBOX 3",

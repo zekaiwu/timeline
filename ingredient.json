@@ -1,8 +1,9 @@
 {
 	"types":[
-	"beef",
-	"tomato",
-	"potato",
-	"chicken",
-	"onion"]
+	{"name" : "beef", "weight" : 20},
+	{"name" : "potato", "weight" : 30},
+	{"name" : "tomato", "weight" : 40},
+	{"name" : "pork", "weight" : 50},
+	{"name" : "chicken", "weight" : 60}
+	]
 }

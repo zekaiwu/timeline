@@ -38,7 +38,7 @@ let firstDraw = true;
 var container = document.getElementById('visualization');
 let startTime = new Date(2020, 0, 1, 0, 0, 0);
 let endTime = new Date(2020, 0, 1, 0, 5, 0);
-
+let numOil,numWater,numStrach;
 // Configuration for the Timeline
 let options = {
   timeAxis: {
@@ -239,6 +239,7 @@ function main() {
         document.getElementById("remarks").innerHTML = myObj.remarks;
         //show actions in timeline
         if (requestNum < 1) {
+          numOil=0;numWater=0;numStrach=0;
           showTimeLine();
           requestNum += 1;
         }
@@ -286,6 +287,16 @@ function main() {
     }
 
   }
+  document.getElementById("new").onclick = async function () {
+    myObj.id = 0;document.getElementById("id").innerHTML = myObj.id;
+    myObj.name = "";document.getElementById("name").innerHTML = myObj.name;
+    myObj.version = 0;document.getElementById("version").innerHTML = myObj.version;
+    myObj.uuid = "";document.getElementById("uuid").innerHTML = myObj.uuid;
+    myObj.remarks = "";document.getElementById("remarks").innerHTML = myObj.remarks;
+    myObj.actions = [];
+    items = [];
+    showTimeLine();
+  };
 }
 async function addPrompt(title, text, inputValue, callback) {
   const { value: p0 } = await Swal.fire({
@@ -296,37 +307,20 @@ async function addPrompt(title, text, inputValue, callback) {
       WOKTEMP: '設置溫度',
       WOKOIL: '起鑊',
       POURBOX: '倒盒',
-      LOADBOX: '取盒',
-      WAIT: '翻炒',
-      POURFOOD: '上菜',
       WOKCLEAN: '洗鍋',
       WOKY: '設置轉速',
-      END: '完成',
-      INIT: '初始化',
-      '調料': {
-        'PSDS 0': '假的',
-        'PSDS 1': '下糖',
-        'PSDS 2': '下鹽',
-        'PSDS 3': '下胡椒',
-        'PSDS 4': '自定調料'
-      },
+      POURFOOD: '上菜',
       '液體': {
-        'PLQS 0': '假的',
-        'PLQS 1': '加水',
-        'PLQS 2': '下油',
-        'PLQS 3': '3號泵噴出',
-        'PLQS 4': '4號泵噴出',
-        'PLQS 5': '5號泵噴出',
-        'PLQS 6': '芡汁',
-        'PLQS 7': '7號泵噴出',
-        'PLQS 8': '8號泵噴出',
+        'PWATER': '假的',
+        'POIL': '加水',
+        'PSTRACH': '下油',
       },
     }
   })
   if (p0) {
     let result = [];
     result.push(p0);
-    if (p0 == 'WOKTEMP' || p0 == 'WOKY' || p0 == 'POURBOX' || p0 == 'LOADBOX') {
+    if (p0 == 'WOKTEMP' || p0 == 'WOKY' || p0 == 'POURBOX') {
       const { value: p1 } = await Swal.fire({
         title: 'parameter',
         input: 'text',
@@ -406,32 +400,15 @@ function addHTML() {
     '<option value="WOKTEMP">設置溫度</option>' +
     '<option value="POURBOX">倒盒</option>' +
     '<option value="WOKOIL">起鑊</option>' +
-    '<option value="LOADBOX">取盒</option>' +
-    '<optgroup label="下調料">' +
-    '<option value="PSDS 0">假的</option>' +
-    '<option value="PSDS 1">下糖</option>' +
-    '<option value="PSDS 2">下鹽</option>' +
-    '<option value="PSDS 3">下胡椒</option>' +
-    '<option value="PSDS 4">下自定調料</option>' +
-    '</optgroup>' +
     '<optgroup label="加液體">' +
-    '<option value="PLQS 0">假的</option>' +
-    '<option value="PLQS 1">加水</option>' +
-    '<option value="PLQS 2">下油</option>' +
-    '<option value="PLQS 3">3號泵噴出</option>' +
-    '<option value="PLQS 4">4號泵噴出</option>' +
-    '<option value="PLQS 5">5號泵噴出</option>' +
-    '<option value="PLQS 6">勾汁</option>' +
-    '<option value="PLQS 7">7號泵噴出</option>' +
-    '<option value="PLQS 8">8號泵噴出</option>' +
+    '<option value="">假的</option>' +
+    '<option value="PWATER">加水</option>' +
+    '<option value="POIL">下油</option>' +
+    '<option value="PSTRACH">芡汁</option>' +
     '</optgroup>' +
-    '<option value="LOADBOX">取盒</option>' +
-    '<option value="WAIT">翻炒</option>' +
     '<option value="POURFOOD">上菜</option>' +
     '<option value="WOKCLEAN">洗鍋</option>' +
     '<option value="WOKY">設置轉速</option>' +
-    '<option value="END">完成</option>' +
-    '<option value="INIT">初始化</option>' +
     '</select>' +
     'parameter<input id="swal-input2" class="swal2-input">' +
     '</if>' +
@@ -456,14 +433,11 @@ function sendObj(filename, myObj) {
   }
   xmlhttp.open("POST", filename, true);
   xmlhttp.send(data);
-}
+}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
 function commandToContent(command) {
   let words = command.split(' ');
   let tempContent;
-  if (words[0] == 'PSDS' || words[0] == 'PLQS') {
-    tempContent = command_dict.get(words[0]).get(words[1]);
-  }
-  else if (words[0] == 'LOADBOX' || words[0] == 'WOKTEMP' || words[0] == 'WOKY' || words[0] == 'POURBOX') {
+  if (words[0] == 'PWATER' || words[0] == 'WOKTEMP' || words[0] == 'WOKY' || words[0] == 'POURBOX' || words[0] == 'POIL' || words[0] == 'PSTRACH') {
     tempContent = command_dict.get(words[0]) + words[1];
   }
   else tempContent = command_dict.get(words[0]);
@@ -580,14 +554,7 @@ document.getElementById("addButton").onclick = async function () {
         let p2 = document.getElementById('swal-input2').value;
         let words = p1.split(' ');
         let result;
-        if (words[0] == 'PSDS' || words[0] == 'PLQS') {
-          result = {
-            command: p1,
-            time: t
-          }
-          return result;
-        }
-        else if (p1 == 'WOKTEMP' || p1 == 'WOKY' || p1 == 'POURBOX' || p1 == 'LOADBOX') {
+        if (p1 == 'WOKTEMP' || p1 == 'WOKY' || p1 == 'POURBOX' || p1 == 'PWATER' || p1 == 'POIL' || p1 == 'PSTRACH') {
           result = {
             command: p1 + ' ' + p2,
             time: t
@@ -659,6 +626,7 @@ document.getElementById("saveButton").onclick = async function () {
     }
   })
 };
+
 let openFile = function (event) {
   var input = event.target;
   var reader = new FileReader();
@@ -726,7 +694,7 @@ function onSelect(properties) {
       }
     })
     if (formValues) {
-      if (words[0] == 'WOKTEMP' || words[0] == 'WOKY' || words[0] == 'POURBOX' || words[0] == 'LOADBOX') {
+      if (words[0] == 'WOKTEMP' || words[0] == 'WOKY' || words[0] == 'POURBOX') {
         items[ti].command = words[0] + ' ' + formValues[0];
       }
       items[ti].content = commandToContent(items[ti].command);

@@ -133,6 +133,7 @@
   <div class="topnav">
     <a class='file'><input type='file' onchange='openFile(event)' />Select Your File</a>
     <button class="edit" id="edit">edit</button>
+    <button class="new" id="new">new</button>
     <button class="save" id="saveButton" disabled>save</button>
   </div><br>
   name: <span id="name"></span><button id="nameButton" disabled>change</button>
@@ -152,7 +153,8 @@
   </div>
   <div>
     <strong>Ingredient in the box: </strong>
-    <span id="boxInfo"></span>
+    <span id="boxContent"></span><br>
+    Weight: <span id="boxWeight"></span>g
   </div>
 </body>
 
