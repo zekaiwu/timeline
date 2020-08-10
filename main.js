@@ -1,4 +1,10 @@
-
+$(".hr-time-picker").hrTimePicker({
+  disableColor : "#989c9c", 
+  enableColor : "#ff5722",
+  arrowTopSymbol : "&#9650;", 
+  arrowBottomSymbol : "&#9660;", 
+  hoursPos : 684 
+});
 let command_dict = new Map([
   ['WOKOIL', '起鑊'],
   ['POURBOX', '倒盒'],
@@ -377,7 +383,7 @@ function alertMaxAction() {
     'Maximun amount of action is 255'
   )
 }
-function generateHTML(command) {
+function updateHTML(command) {
   let words = command.split(' ');
   let result = '<!doctype html>' +
     '<html>' +
@@ -395,7 +401,7 @@ function generateHTML(command) {
   return result;
 }
 function addHTML() {
-  let result = 'function' +
+  let result = /*'function' +
     '<select id="swal-input1" class="swal2-input" list="swal-input1" name="swal-input1">' +
     '<option value="WOKTEMP">設置溫度</option>' +
     '<option value="POURBOX">倒盒</option>' +
@@ -410,8 +416,8 @@ function addHTML() {
     '<option value="WOKY">設置轉速</option>' +
     '</select>' +
     'parameter<input id="swal-input2" class="swal2-input">' +
-    '</if>' +
-    'time<input id="swal-input3" class="swal2-input">';
+    '</if>' +*/
+    '<input id="hrtimepicker" class="form-control" autofocus>';
   return result;
 }
 function sendObj(filename, myObj) {
@@ -545,7 +551,13 @@ document.getElementById("addButton").onclick = async function () {
     } = await Swal.fire({
       title: 'Multiple inputs',
       showCancelButton: true,
-      html: addHTML("WOKOIL"),
+      html: addHTML(),
+      onOpen: function() {
+        $('#hrtimepicker').hrTimePicker({
+            format: 'DD/MM/YYYY hh:mm A',
+            defaultDate: new Date()
+        });
+      },
       focusConfirm: false,
       preConfirm: () => {
         let t = document.getElementById('swal-input3').value;
@@ -606,6 +618,7 @@ document.getElementById("addButton").onclick = async function () {
     }
   }
 };
+
 //save recipe
 document.getElementById("saveButton").onclick = async function () {
   Swal.fire({
@@ -708,5 +721,6 @@ function onSelect(properties) {
   }
 };
 function showBox(rec){
-  document.getElementById("boxInfo").innerHTML = rec.content;
+  document.getElementById("boxContent").innerHTML = rec.content;
+  document.getElementById("boxWeight").innerHTML = rec.weight;
 }
