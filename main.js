@@ -1,10 +1,3 @@
-$(".hr-time-picker").hrTimePicker({
-  disableColor : "#989c9c", 
-  enableColor : "#ff5722",
-  arrowTopSymbol : "&#9650;", 
-  arrowBottomSymbol : "&#9660;", 
-  hoursPos : 684 
-});
 let command_dict = new Map([
   ['WOKOIL', '起鑊'],
   ['POURBOX', '倒盒'],
@@ -44,7 +37,7 @@ let firstDraw = true;
 var container = document.getElementById('visualization');
 let startTime = new Date(2020, 0, 1, 0, 0, 0);
 let endTime = new Date(2020, 0, 1, 0, 5, 0);
-let numOil,numWater,numStrach;
+let numOil, numWater, numStrach;
 // Configuration for the Timeline
 let options = {
   timeAxis: {
@@ -172,14 +165,18 @@ let options = {
   onRemove: function (item, callback) {
     prettyConfirm('Remove item', 'Do you really want to remove item ' + item.content + '?', function (ok) {
       if (ok) {
-
         //remove the action in myObj.actions
         for (let i = 0; i < myObj.actions.length; i++) {
           if (item.id == myObj.actions[i].id) {
             console.log('delete ' + myObj.actions[i].command);
-            console.log('array length ' + myObj.actions.length);
+            let words = myObj.actions[i].command.split(' ');
+            if (words[0] == 'PWATER')
+              numWater--;
+            if (words[0] == 'POIL')
+              numWater--;
+            if (words[0] == 'PSTRACH')
+              numStrach--;
             myObj.actions.splice(i, 1);
-            console.log('array length ' + myObj.actions.length);
             break;
           }
         }
@@ -243,9 +240,9 @@ function main() {
         document.getElementById("modified_date").innerHTML = myObj.modified_date;
         document.getElementById("uuid").innerHTML = myObj.uuid;
         document.getElementById("remarks").innerHTML = myObj.remarks;
+        numOil = 3; numWater = 3; numStrach = 3;
         //show actions in timeline
         if (requestNum < 1) {
-          numOil=0;numWater=0;numStrach=0;
           showTimeLine();
           requestNum += 1;
         }
@@ -294,11 +291,11 @@ function main() {
 
   }
   document.getElementById("new").onclick = async function () {
-    myObj.id = 0;document.getElementById("id").innerHTML = myObj.id;
-    myObj.name = "";document.getElementById("name").innerHTML = myObj.name;
-    myObj.version = 0;document.getElementById("version").innerHTML = myObj.version;
-    myObj.uuid = "";document.getElementById("uuid").innerHTML = myObj.uuid;
-    myObj.remarks = "";document.getElementById("remarks").innerHTML = myObj.remarks;
+    myObj.id = 0; document.getElementById("id").innerHTML = myObj.id;
+    myObj.name = ""; document.getElementById("name").innerHTML = myObj.name;
+    myObj.version = 0; document.getElementById("version").innerHTML = myObj.version;
+    myObj.uuid = ""; document.getElementById("uuid").innerHTML = myObj.uuid;
+    myObj.remarks = ""; document.getElementById("remarks").innerHTML = myObj.remarks;
     myObj.actions = [];
     items = [];
     showTimeLine();
@@ -349,7 +346,7 @@ async function updatePrompt(title, text, inputValue, callback) {
   } = await Swal.fire({
     title: 'Multiple inputs',
     showCancelButton: true,
-    html: generateHTML(inputValue),
+    html: updateHTML(inputValue),
     focusConfirm: false,
     preConfirm: () => {
       return [
@@ -383,6 +380,11 @@ function alertMaxAction() {
     'Maximun amount of action is 255'
   )
 }
+function alertMaxLiquid() {
+  Swal.fire(
+    'You can only pour 1 liquid 3 times'
+  )
+}
 function updateHTML(command) {
   let words = command.split(' ');
   let result = '<!doctype html>' +
@@ -401,7 +403,7 @@ function updateHTML(command) {
   return result;
 }
 function addHTML() {
-  let result = /*'function' +
+  let result = 'function' +
     '<select id="swal-input1" class="swal2-input" list="swal-input1" name="swal-input1">' +
     '<option value="WOKTEMP">設置溫度</option>' +
     '<option value="POURBOX">倒盒</option>' +
@@ -416,8 +418,8 @@ function addHTML() {
     '<option value="WOKY">設置轉速</option>' +
     '</select>' +
     'parameter<input id="swal-input2" class="swal2-input">' +
-    '</if>' +*/
-    '<input id="hrtimepicker" class="form-control" autofocus>';
+    '</if>' +
+    'parameter<input id="swal-input3" class="swal2-input">';
   return result;
 }
 function sendObj(filename, myObj) {
@@ -438,7 +440,7 @@ function sendObj(filename, myObj) {
   }
   xmlhttp.open("POST", filename, true);
   xmlhttp.send(data);
-}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
+}
 function commandToContent(command) {
   let words = command.split(' ');
   let tempContent;
@@ -552,10 +554,10 @@ document.getElementById("addButton").onclick = async function () {
       title: 'Multiple inputs',
       showCancelButton: true,
       html: addHTML(),
-      onOpen: function() {
+      onOpen: function () {
         $('#hrtimepicker').hrTimePicker({
-            format: 'DD/MM/YYYY hh:mm A',
-            defaultDate: new Date()
+          format: 'DD/MM/YYYY hh:mm A',
+          defaultDate: new Date()
         });
       },
       focusConfirm: false,
@@ -584,6 +586,11 @@ document.getElementById("addButton").onclick = async function () {
     if (formValues) {
       //console.log(inputValue);
       console.log(formValues.command);
+      let words = formValues.command.split(' ');
+      if (liquidMax(words[0])) {
+        alertMaxLiquid();
+        return;
+      }
       let tempID;
       for (let i = 0; i <= myObj.actions.length; i++) {
         let occupied = false;
@@ -604,7 +611,7 @@ document.getElementById("addButton").onclick = async function () {
         time: formValues.time,
       };
       myObj.actions.push(newAction);
-      let words = formValues.command.split(' ');
+      words = formValues.command.split(' ');
       let newItem = {
         id: tempID,
         content: commandToContent(formValues.command),
@@ -630,8 +637,7 @@ document.getElementById("saveButton").onclick = async function () {
     confirmButtonText: 'Save'
   }).then((result) => {
     if (result.value) {
-      myObj.uuid = uuidv4();
-      myObj.version = parseInt(myObj.version) + 1;
+      updateMyObj();
       filename = myObj.id + '_v' + myObj.version.toString() + '.json';
       console.log(filename);
       sendObj(filename, myObj);
@@ -694,9 +700,9 @@ function onSelect(properties) {
     const {
       value: formValues
     } = await Swal.fire({
-      title: 'Multiple inputs',
+      title: items[ti].command,
       showCancelButton: true,
-      html: generateHTML(items[ti].command),
+      html: updateHTML(items[ti].command),
       focusConfirm: false,
       preConfirm: () => {
         return [
@@ -720,7 +726,55 @@ function onSelect(properties) {
     }
   }
 };
-function showBox(rec){
+function showBox(rec) {
   document.getElementById("boxContent").innerHTML = rec.content;
   document.getElementById("boxWeight").innerHTML = rec.weight;
+}
+function liquidMax(command) {
+  if (command == 'PWATER')
+    if (numWater >= 3)
+      return true;
+    else numWater++;
+  if (command == 'POIL')
+    if (numOil >= 3)
+      return true;
+    else numOil++;
+  if (command == 'PSTRACH')
+    if (numStrach >= 3)
+      return true;
+    else numStrach++;
+  return false;
+}
+function updateMyObj() {
+  myObj.uuid = uuidv4();
+  myObj.version = parseInt(myObj.version) + 1;
+  myObj.water = [];
+  myObj.oil = [];
+  myObj.strach = [];
+  myObj.actions.forEach(updateArray);
+  function updateArray(item) {
+    let words = item.command.split(' ');
+    let tempItem;
+    if (words[0] == 'PWATER') {
+      tempItem = {
+        portion: parseInt(words[1]),
+        time: item.time
+      };
+      myObj.water.push(tempItem);
+    }
+    if (words[0] == 'POIL') {
+      tempItem = {
+        portion: parseInt(words[1]),
+        time: item.time
+      };
+      myObj.oil.push(tempItem);
+    }
+    if (words[0] == 'PSTARCH') {
+      tempItem = {
+        portion: parseInt(words[1]),
+        time: item.time
+      };
+      myObj.strach.push(tempItem);
+    }
+  }
 }

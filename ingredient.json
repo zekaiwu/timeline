@@ -1,9 +1,29 @@
 {
-	"types":[
-	{"name" : "beef", "weight" : 20},
-	{"name" : "potato", "weight" : 30},
-	{"name" : "tomato", "weight" : 40},
-	{"name" : "pork", "weight" : 50},
-	{"name" : "chicken", "weight" : 60}
+	"box": [
+		{
+			"id": 1,
+			"name": "beef",
+			"content": "asd(123.0g)"
+		},
+		{
+			"id": 2,
+			"name": "beef",
+			"content": "asd(123.0g)+sdf(456.7g)"
+		},
+		{
+			"id": 3,
+			"name": "beef",
+			"content": "asd(123.0g)"
+		},
+		{
+			"id": 4,
+			"name": "beef",
+			"content": "asd(123.0g)"
+		},
+		{
+			"id": 5,
+			"name": "beef",
+			"content": "asd(123.0g)"
+		}
 	]
 }
