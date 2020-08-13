@@ -29,16 +29,27 @@ let time_dict = new Map([
   ['START', 1],
   ['WAIT', 1]
 ]);
-var xmlhttp = new XMLHttpRequest();
-let filename = "example.json", filename1;
-let myObj;
+var xmlhttp = new XMLHttpRequest(),xmlhttp1 = new XMLHttpRequest();
+let filename = "example.json";
+let myObj = {
+  name : '',
+  id : 0,
+  uuid : '',
+  modified_date : '',
+  version : '',
+  remarks : '',
+  box : [],
+  water : [],
+  oil : [],
+  starch : []
+};
 let items = [];
 let firstDraw = true;
 var container = document.getElementById('visualization');
 let startTime = new Date(2020, 0, 1, 0, 0, 0);
 let endTime = new Date(2020, 0, 1, 0, 5, 0);
-let numOil, numWater, numStrach;
-// Configuration for the Timeline
+let numOil, numWater, numStarch, ingredientGotten = 0;
+let data = new FormData();
 let options = {
   timeAxis: {
     scale: 'second',
@@ -222,36 +233,58 @@ let options = {
 
 };
 let timeline = new vis.Timeline(container, items, options);
-
-main();
-function main() {
-  let requestNum = 0;
-  xmlhttp.onreadystatechange = function () {
-    if (this.readyState == 4 && this.status == 200) {
-      let rec = JSON.parse(this.responseText);
-      if (rec.name == 'box') {
-        showBox(rec);
-      }
-      else {
-        myObj = JSON.parse(this.responseText);
-        document.getElementById("name").innerHTML = myObj.name;
-        document.getElementById("id").innerHTML = myObj.id;
-        document.getElementById("version").innerHTML = myObj.version;
-        document.getElementById("modified_date").innerHTML = myObj.modified_date;
-        document.getElementById("uuid").innerHTML = myObj.uuid;
-        document.getElementById("remarks").innerHTML = myObj.remarks;
-        numOil = 3; numWater = 3; numStrach = 3;
-        //show actions in timeline
-        if (requestNum < 1) {
-          showTimeLine();
-          requestNum += 1;
-        }
-      }
+data.append('f', 'BOX');
+xmlhttp.open("POST", filename, true);
+xmlhttp.send(data);
+xmlhttp.onreadystatechange = function () {
+  if (this.readyState == 4 && this.status ==200) {
+    let rec = JSON.parse(this.responseText);
+    let ingredient = rec;
+  }
+};
+window.onload=async function(){
+  const { value: file } = await Swal.fire({
+    title: 'Select image',
+    input: 'file',
+    showCancelButton: true,
+    inputAttributes: {
+      'aria-label': 'select your json file here'
+    },
+    cancelButtonText: 'New',
+    allowOutsideClick: false
+  })
+  
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      Swal.fire({
+        title: 'Your select file',
+      })
     }
-  };
+    reader.readAsDataURL(file);
+    filename = file.name;
+    main();
+  }
+}
+function main() {
   xmlhttp.open("GET", filename, true);
   xmlhttp.send();
-
+  xmlhttp.onreadystatechange = function () {
+    if (this.readyState == 4 && this.status ==200) {
+      let rec = JSON.parse(this.responseText);
+      console.log(rec.name);
+      myObj = JSON.parse(this.responseText);
+      document.getElementById("name").innerHTML = myObj.name;
+      document.getElementById("id").innerHTML = myObj.id;
+      document.getElementById("version").innerHTML = myObj.version;
+      document.getElementById("modified_date").innerHTML = myObj.modified_date;
+      document.getElementById("uuid").innerHTML = myObj.uuid;
+      document.getElementById("remarks").innerHTML = myObj.remarks;
+      numWater = myObj.water.length; numOil = myObj.oil.length; numStarch = myObj.starch.length;
+      showTimeLine();
+    }
+  };
+  
   function showTimeLine() {
     for (let i = 0; i < myObj.actions.length; i++) {
       let tempTime = myObj.actions[i].time;
@@ -271,9 +304,6 @@ function main() {
         time: tempTime,
       }
     }
-
-
-
     // Create a Timeline
     if (firstDraw) {
       timeline.destroy();
@@ -683,19 +713,10 @@ function onSelect(properties) {
   }
   let type;
   console.log(myObj.actions[ti2]);
-  let words = myObj.actions[ti2].command.split(' ');
-  if (words[0] == "POURBOX" || words[0] == "LOADBOX") {
-    myObj.box.forEach(function myFunction(item, index) {
-      if (item.id == parseInt(words[1]))
-        type = item.type;
-    })
-    let data = new FormData();
-    data.append('f', 'BOX');
-    data.append('type', type);
-    xmlhttp.open("POST", filename, true);
-    xmlhttp.send(data);
+  let words = myObj.actions[ti2].command.split('');
+  if (words[0] == 'POURBOX'){
+    let bid = parseInt(words[1]);
   }
-
   document.getElementById("updateButton").onclick = async function () {
     const {
       value: formValues
@@ -725,6 +746,7 @@ function onSelect(properties) {
       timeline.setItems(items);
     }
   }
+  
 };
 function showBox(rec) {
   document.getElementById("boxContent").innerHTML = rec.content;
