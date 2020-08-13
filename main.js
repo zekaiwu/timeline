@@ -48,7 +48,7 @@ let firstDraw = true;
 var container = document.getElementById('visualization');
 let startTime = new Date(2020, 0, 1, 0, 0, 0);
 let endTime = new Date(2020, 0, 1, 0, 5, 0);
-let numOil, numWater, numStarch, ingredientGotten = 0;
+let numOil, numWater, numStarch, ingredient;
 let data = new FormData();
 let options = {
   timeAxis: {
@@ -239,7 +239,7 @@ xmlhttp.send(data);
 xmlhttp.onreadystatechange = function () {
   if (this.readyState == 4 && this.status ==200) {
     let rec = JSON.parse(this.responseText);
-    let ingredient = rec;
+    ingredient = rec;
   }
 };
 window.onload=async function(){
@@ -712,10 +712,15 @@ function onSelect(properties) {
       ti2 = i;
   }
   let type;
+  let words = myObj.actions[ti2].command.split(' ');
   console.log(myObj.actions[ti2]);
-  let words = myObj.actions[ti2].command.split('');
   if (words[0] == 'POURBOX'){
-    let bid = parseInt(words[1]);
+    console.log(myObj.box.toString());
+    for(let i=0;i<ingredient.box.length;i++){
+      if (myObj.box[parseInt(words[1])].id == ingredient.box[i].id){
+        showBox(ingredient.box[i].content);
+      }
+    }
   }
   document.getElementById("updateButton").onclick = async function () {
     const {
@@ -748,9 +753,8 @@ function onSelect(properties) {
   }
   
 };
-function showBox(rec) {
-  document.getElementById("boxContent").innerHTML = rec.content;
-  document.getElementById("boxWeight").innerHTML = rec.weight;
+function showBox(content) {
+  document.getElementById("boxContent").innerHTML = content;
 }
 function liquidMax(command) {
   if (command == 'PWATER')
