@@ -29,19 +29,20 @@ let time_dict = new Map([
   ['START', 1],
   ['WAIT', 1]
 ]);
-var xmlhttp = new XMLHttpRequest(),xmlhttp1 = new XMLHttpRequest();
+var xmlhttp = new XMLHttpRequest(), xmlhttp1 = new XMLHttpRequest();
 let filename = "example.json";
 let myObj = {
-  name : '',
-  id : 0,
-  uuid : '',
-  modified_date : '',
-  version : '',
-  remarks : '',
-  box : [],
-  water : [],
-  oil : [],
-  starch : []
+  name: '',
+  id: 0,
+  uuid: '',
+  modified_date: '',
+  version: '',
+  remarks: '',
+  actions: [],
+  box: [],
+  water: [],
+  oil: [],
+  starch: []
 };
 let items = [];
 let firstDraw = true;
@@ -237,12 +238,12 @@ data.append('f', 'BOX');
 xmlhttp.open("POST", filename, true);
 xmlhttp.send(data);
 xmlhttp.onreadystatechange = function () {
-  if (this.readyState == 4 && this.status ==200) {
+  if (this.readyState == 4 && this.status == 200) {
     let rec = JSON.parse(this.responseText);
     ingredient = rec;
   }
 };
-window.onload=async function(){
+window.onload = async function () {
   const { value: file } = await Swal.fire({
     title: 'Select image',
     input: 'file',
@@ -253,7 +254,7 @@ window.onload=async function(){
     cancelButtonText: 'New',
     allowOutsideClick: false
   })
-  
+
   if (file) {
     const reader = new FileReader();
     reader.onload = (e) => {
@@ -263,28 +264,35 @@ window.onload=async function(){
     }
     reader.readAsDataURL(file);
     filename = file.name;
-    main();
+    main(true);
+  }
+  else {
+    main(false);
   }
 }
-function main() {
-  xmlhttp.open("GET", filename, true);
-  xmlhttp.send();
-  xmlhttp.onreadystatechange = function () {
-    if (this.readyState == 4 && this.status ==200) {
-      let rec = JSON.parse(this.responseText);
-      console.log(rec.name);
-      myObj = JSON.parse(this.responseText);
-      document.getElementById("name").innerHTML = myObj.name;
-      document.getElementById("id").innerHTML = myObj.id;
-      document.getElementById("version").innerHTML = myObj.version;
-      document.getElementById("modified_date").innerHTML = myObj.modified_date;
-      document.getElementById("uuid").innerHTML = myObj.uuid;
-      document.getElementById("remarks").innerHTML = myObj.remarks;
-      numWater = myObj.water.length; numOil = myObj.oil.length; numStarch = myObj.starch.length;
-      showTimeLine();
-    }
-  };
-  
+function main(selectFile) {
+  if (selectFile) {
+    xmlhttp.open("GET", filename, true);
+    xmlhttp.send();
+    xmlhttp.onreadystatechange = function () {
+      if (this.readyState == 4 && this.status == 200) {
+        let rec = JSON.parse(this.responseText);
+        console.log(rec.name);
+        myObj = JSON.parse(this.responseText);
+        document.getElementById("name").innerHTML = myObj.name;
+        document.getElementById("id").innerHTML = myObj.id;
+        document.getElementById("version").innerHTML = myObj.version;
+        document.getElementById("modified_date").innerHTML = myObj.modified_date;
+        document.getElementById("uuid").innerHTML = myObj.uuid;
+        document.getElementById("remarks").innerHTML = myObj.remarks;
+        numWater = myObj.water.length; numOil = myObj.oil.length; numStarch = myObj.starch.length;
+        showTimeLine();
+      }
+    };
+  }
+  else {
+    showTimeLine();
+  }
   function showTimeLine() {
     for (let i = 0; i < myObj.actions.length; i++) {
       let tempTime = myObj.actions[i].time;
@@ -433,7 +441,7 @@ function updateHTML(command) {
   return result;
 }
 function addHTML() {
-  let result = 'function' +
+  let result = /*'function' +
     '<select id="swal-input1" class="swal2-input" list="swal-input1" name="swal-input1">' +
     '<option value="WOKTEMP">設置溫度</option>' +
     '<option value="POURBOX">倒盒</option>' +
@@ -448,8 +456,8 @@ function addHTML() {
     '<option value="WOKY">設置轉速</option>' +
     '</select>' +
     'parameter<input id="swal-input2" class="swal2-input">' +
-    '</if>' +
-    'parameter<input id="swal-input3" class="swal2-input">';
+    'time<input id="swal-input3" class="swal2-input">'+*/
+    '<input id="hrtimepicker" class="swal3-input">';
   return result;
 }
 function sendObj(filename, myObj) {
@@ -581,13 +589,16 @@ document.getElementById("addButton").onclick = async function () {
     const {
       value: formValues
     } = await Swal.fire({
-      title: 'Multiple inputs',
+      title: 'Add Actions',
       showCancelButton: true,
       html: addHTML(),
+      customClass: 'swal2-overflow',
       onOpen: function () {
         $('#hrtimepicker').hrTimePicker({
-          format: 'DD/MM/YYYY hh:mm A',
-          defaultDate: new Date()
+          disableColor: "#989c9c",
+          enableColor: "#ff5722", 
+          arrowTopSymbol: "&#9650;", 
+          arrowBottomSymbol: "&#9660;" 
         });
       },
       focusConfirm: false,
@@ -683,7 +694,7 @@ let openFile = function (event) {
   };
   reader.readAsDataURL(input.files[0]);
   filename = input.files[0].name;
-  main();
+  main(true);
 };
 /*
 <input id="saveAs" type='file' accept='' class="saveAs" onchange='saveAs(event)' disabled></input>
@@ -714,10 +725,10 @@ function onSelect(properties) {
   let type;
   let words = myObj.actions[ti2].command.split(' ');
   console.log(myObj.actions[ti2]);
-  if (words[0] == 'POURBOX'){
+  if (words[0] == 'POURBOX') {
     console.log(myObj.box.toString());
-    for(let i=0;i<ingredient.box.length;i++){
-      if (myObj.box[parseInt(words[1])].id == ingredient.box[i].id){
+    for (let i = 0; i < ingredient.box.length; i++) {
+      if (myObj.box[parseInt(words[1])].id == ingredient.box[i].id) {
         showBox(ingredient.box[i].content);
       }
     }
@@ -751,7 +762,7 @@ function onSelect(properties) {
       timeline.setItems(items);
     }
   }
-  
+
 };
 function showBox(content) {
   document.getElementById("boxContent").innerHTML = content;
