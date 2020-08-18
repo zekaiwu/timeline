@@ -441,7 +441,7 @@ function updateHTML(command) {
   return result;
 }
 function addHTML() {
-  let result = /*'function' +
+  let result = 'function' +
     '<select id="swal-input1" class="swal2-input" list="swal-input1" name="swal-input1">' +
     '<option value="WOKTEMP">設置溫度</option>' +
     '<option value="POURBOX">倒盒</option>' +
@@ -456,8 +456,7 @@ function addHTML() {
     '<option value="WOKY">設置轉速</option>' +
     '</select>' +
     'parameter<input id="swal-input2" class="swal2-input">' +
-    'time<input id="swal-input3" class="swal2-input">'+*/
-    '<input id="hrtimepicker" class="swal3-input">';
+    '<input id="timepicker" class="swal2-input">';
   return result;
 }
 function sendObj(filename, myObj) {
@@ -581,6 +580,8 @@ document.getElementById("edit").onclick = async function () {
     }
   })
 };
+
+
 document.getElementById("addButton").onclick = async function () {
   if (myObj.actions.length >= 255) {
     alertMaxAction();
@@ -588,22 +589,20 @@ document.getElementById("addButton").onclick = async function () {
   else {
     const {
       value: formValues
-    } = await Swal.fire({
+    } = await Swal.fire(
+      {
       title: 'Add Actions',
       showCancelButton: true,
       html: addHTML(),
       customClass: 'swal2-overflow',
       onOpen: function () {
-        $('#hrtimepicker').hrTimePicker({
-          disableColor: "#989c9c",
-          enableColor: "#ff5722", 
-          arrowTopSymbol: "&#9650;", 
-          arrowBottomSymbol: "&#9660;" 
-        });
+        $('#timepicker').timepicker({
+      });
       },
       focusConfirm: false,
       preConfirm: () => {
-        let t = document.getElementById('swal-input3').value;
+        let t = calculateSeconds(document.getElementById('timepicker').value);
+        console.log(t);
         let p1 = document.getElementById('swal-input1').value;
         let p2 = document.getElementById('swal-input2').value;
         let words = p1.split(' ');
@@ -814,4 +813,8 @@ function updateMyObj() {
       myObj.strach.push(tempItem);
     }
   }
+}
+function calculateSeconds(string){
+  words = string.split(':');
+  return parseInt(words[0])*60+parseInt(words[1]);
 }
