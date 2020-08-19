@@ -1,0 +1,15 @@
+{
+	"filename": "0_vNaN.json",
+	"name": "",
+	"id": 0,
+	"version": null,
+	"modified_date": "Tue Aug 18 2020 16:59:32 GMT+0800 (香港標準時間)",
+	"uuid": "c7a9980e-f801-4aae-bed2-760eeed7f58b",
+	"remarks": "",
+	"actions": [
+		{
+			"command": "POIL 123",
+			"time": 72
+		}
+	]
+}

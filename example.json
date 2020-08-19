@@ -58,46 +58,12 @@
 			"type":4
 		}
 	],
-	"oil": [
-		{
-			"portion": 1990,
-			"time" : 120
-		},
-		{
-			"portion": 2000,
-			"time": 121
-		},
-		{
-			"portion": 2001,
-			"time": 131
-		}
-	],
+	"oil": [],
 	"water": [
 		{
-			"portion": 200,
-			"time": 4
-		},
-		{
-			"portion": 300,
-			"time": 10
-		},
-		{
-			"portion": 500,
-			"time": 13
+			"portion":230,
+			"time":29
 		}
 	],
-	"starch": [
-		{
-			"portion": 200,
-			"time": 4
-		},
-		{
-			"portion": 300,
-			"time": 10
-		},
-		{
-			"portion": 500,
-			"time": 13
-		} 	
-	]
+	"starch": []
 }

@@ -15,7 +15,6 @@ http.createServer(function (request, response) {
             //get information
             body = Buffer.concat(body).toString();
             lines = body.split(/\r\n|\r|\n/);
-            console.log(lines);
             let f = lines[3];
             if (f == "WRITE")
                 write(lines);
@@ -24,9 +23,10 @@ http.createServer(function (request, response) {
             if (f == "BOX") {
                 var text = fs.readFileSync('ingredient.json', 'utf8');
                 let ingredients = JSON.parse(text);
+                console.log(ingredients.box);
                 result = {
                     name: 'box',
-                    box: ingredients
+                    box: ingredients.box
                 };
             };
         });

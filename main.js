@@ -49,7 +49,7 @@ let firstDraw = true;
 var container = document.getElementById('visualization');
 let startTime = new Date(2020, 0, 1, 0, 0, 0);
 let endTime = new Date(2020, 0, 1, 0, 5, 0);
-let numOil, numWater, numStarch, ingredient;
+let numOil, numWater, numStarch, ingredients;
 let data = new FormData();
 let options = {
   timeAxis: {
@@ -235,17 +235,18 @@ let options = {
 };
 let timeline = new vis.Timeline(container, items, options);
 data.append('f', 'BOX');
-xmlhttp.open("POST", filename, true);
+xmlhttp.open("POST", 'ingredient.json', true);
 xmlhttp.send(data);
 xmlhttp.onreadystatechange = function () {
   if (this.readyState == 4 && this.status == 200) {
     let rec = JSON.parse(this.responseText);
-    ingredient = rec;
+    ingredients = rec;
+    console.log(rec.box);
   }
 };
 window.onload = async function () {
   const { value: file } = await Swal.fire({
-    title: 'Select image',
+    title: 'Select file',
     input: 'file',
     showCancelButton: true,
     inputAttributes: {
@@ -423,42 +424,7 @@ function alertMaxLiquid() {
     'You can only pour 1 liquid 3 times'
   )
 }
-function updateHTML(command) {
-  let words = command.split(' ');
-  let result = '<!doctype html>' +
-    '<html>' +
-    '<head>' +
-    '</head>' +
-    '<body>';
-  if (words[0] == "WOKTEMP" || words[0] == "LOADBOX" || words[0] == "POURBOX" || words[0] == "WOKY") {
-    result += 'parameter<input id=swal-input2 class="swal2-input" name="swal-input2">';
-  }
-  else {
-    result += '<span id=swal-input2 value=""></span>';
-  }
-  result += 'time<input id="swal-input3" class="swal2-input">' +
-    '</html>';
-  return result;
-}
-function addHTML() {
-  let result = 'function' +
-    '<select id="swal-input1" class="swal2-input" list="swal-input1" name="swal-input1">' +
-    '<option value="WOKTEMP">設置溫度</option>' +
-    '<option value="POURBOX">倒盒</option>' +
-    '<option value="WOKOIL">起鑊</option>' +
-    '<optgroup label="加液體">' +
-    '<option value="PWATER">加水</option>' +
-    '<option value="POIL">下油</option>' +
-    '<option value="PSTRACH">芡汁</option>' +
-    '</optgroup>' +
-    '<option value="POURFOOD">上菜</option>' +
-    '<option value="WOKCLEAN">洗鍋</option>' +
-    '<option value="WOKY">設置轉速</option>' +
-    '</select>' +
-    'parameter<input id="swal-input2" class="swal2-input">' +
-    '<input id="timepicker" class="swal2-input">';
-  return result;
-}
+
 function sendObj(filename, myObj) {
   let data = new FormData();
   data.append('f', 'WRITE');
@@ -597,6 +563,8 @@ document.getElementById("addButton").onclick = async function () {
       customClass: 'swal2-overflow',
       onOpen: function () {
         $('#timepicker').timepicker({
+          minuteMax: 5,
+          timeFormat: 'mm:ss'
       });
       },
       focusConfirm: false,
@@ -721,14 +689,12 @@ function onSelect(properties) {
     if (myObj.actions[i].id == id)
       ti2 = i;
   }
-  let type;
   let words = myObj.actions[ti2].command.split(' ');
   console.log(myObj.actions[ti2]);
   if (words[0] == 'POURBOX') {
-    console.log(myObj.box.toString());
-    for (let i = 0; i < ingredient.box.length; i++) {
-      if (myObj.box[parseInt(words[1])].id == ingredient.box[i].id) {
-        showBox(ingredient.box[i].content);
+    for (let i = 0; i < ingredients.box.length; i++) {
+      if (myObj.box[parseInt(words[1])].id == ingredients.box[i].id) {
+        showBox(ingredients.box[i].content);
       }
     }
   }
@@ -817,4 +783,40 @@ function updateMyObj() {
 function calculateSeconds(string){
   words = string.split(':');
   return parseInt(words[0])*60+parseInt(words[1]);
+}
+function updateHTML(command) {
+  let words = command.split(' ');
+  let result = '<!doctype html>' +
+    '<html>' +
+    '<head>' +
+    '</head>' +
+    '<body>';
+  if (words[0] == "WOKTEMP" || words[0] == "LOADBOX" || words[0] == "POURBOX" || words[0] == "WOKY") {
+    result += 'parameter<input id=swal-input2 class="swal2-input" name="swal-input2">';
+  }
+  else {
+    result += '<span id=swal-input2 value=""></span>';
+  }
+  result += 'time<input id="swal-input3" class="swal2-input">' +
+    '</html>';
+  return result;
+}
+function addHTML() {
+  let result = 'function' +
+    '<select id="swal-input1" class="swal2-input" list="swal-input1" name="swal-input1">' +
+    '<option value="WOKTEMP">設置溫度</option>' +
+    '<option value="POURBOX">倒盒</option>' +
+    '<option value="WOKOIL">起鑊</option>' +
+    '<optgroup label="加液體">' +
+    '<option value="PWATER">加水</option>' +
+    '<option value="POIL">下油</option>' +
+    '<option value="PSTRACH">芡汁</option>' +
+    '</optgroup>' +
+    '<option value="POURFOOD">上菜</option>' +
+    '<option value="WOKCLEAN">洗鍋</option>' +
+    '<option value="WOKY">設置轉速</option>' +
+    '</select>' +
+    'parameter<input id="swal-input2" class="swal2-input">' +
+    '<input id="timepicker" class="swal2-input">';
+  return result;
 }
