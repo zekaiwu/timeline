@@ -32,11 +32,12 @@ let time_dict = new Map([
 var xmlhttp = new XMLHttpRequest(), xmlhttp1 = new XMLHttpRequest();
 let filename = "example.json";
 let myObj = {
+  filename : '',
   name: '',
   id: 0,
   uuid: '',
   modified_date: '',
-  version: '',
+  version: 0,
   remarks: '',
   actions: [],
   box: [],
@@ -240,8 +241,23 @@ xmlhttp.send(data);
 xmlhttp.onreadystatechange = function () {
   if (this.readyState == 4 && this.status == 200) {
     let rec = JSON.parse(this.responseText);
-    ingredients = rec;
-    console.log(rec.box);
+    if (rec.name == 'box') {
+      console.log(1);
+      ingredients = rec;
+      console.log(rec.box);
+    }
+    else {
+      console.log(rec.name);
+      myObj = JSON.parse(this.responseText);
+      document.getElementById("name").innerHTML = myObj.name;
+      document.getElementById("id").innerHTML = myObj.id;
+      document.getElementById("version").innerHTML = myObj.version;
+      document.getElementById("modified_date").innerHTML = myObj.modified_date;
+      document.getElementById("uuid").innerHTML = myObj.uuid;
+      document.getElementById("remarks").innerHTML = myObj.remarks;
+      numWater = myObj.water.length; numOil = myObj.oil.length; numStarch = myObj.starch.length;
+      showTimeLine();
+    }
   }
 };
 window.onload = async function () {
@@ -275,61 +291,13 @@ function main(selectFile) {
   if (selectFile) {
     xmlhttp.open("GET", filename, true);
     xmlhttp.send();
-    xmlhttp.onreadystatechange = function () {
-      if (this.readyState == 4 && this.status == 200) {
-        let rec = JSON.parse(this.responseText);
-        console.log(rec.name);
-        myObj = JSON.parse(this.responseText);
-        document.getElementById("name").innerHTML = myObj.name;
-        document.getElementById("id").innerHTML = myObj.id;
-        document.getElementById("version").innerHTML = myObj.version;
-        document.getElementById("modified_date").innerHTML = myObj.modified_date;
-        document.getElementById("uuid").innerHTML = myObj.uuid;
-        document.getElementById("remarks").innerHTML = myObj.remarks;
-        numWater = myObj.water.length; numOil = myObj.oil.length; numStarch = myObj.starch.length;
-        showTimeLine();
-      }
-    };
   }
   else {
+    newObj();
     showTimeLine();
   }
-  function showTimeLine() {
-    for (let i = 0; i < myObj.actions.length; i++) {
-      let tempTime = myObj.actions[i].time;
-      let words = myObj.actions[i].command.split(' ');
-      let tempContent = commandToContent(myObj.actions[i].command);
-      items[i] = {
-        id: i,
-        content: tempContent,
-        command: myObj.actions[i].command,
-        length: time_dict.get(words[0]),
-        start: new Date().setTime(startTime.getTime() + myObj.actions[i].time * 1000),
-        end: new Date().setTime(startTime.getTime() + myObj.actions[i].time * 1000 + time_dict.get(words[0])),
-      };
-      myObj.actions[i] = {
-        id: i,
-        command: items[i].command,
-        time: tempTime,
-      }
-    }
-    // Create a Timeline
-    if (firstDraw) {
-      timeline.destroy();
-      console.log("firstTimeline")
-      timeline = new vis.Timeline(container, items, options);
-      timeline.on('select', onSelect);
-      firstDraw = false;
-    }
-    else {
-      timeline.destroy();
-      timeline = new vis.Timeline(container, items, options);
-      timeline.on('select', onSelect);
-      timeline.redraw();
-    }
-
-  }
-  document.getElementById("new").onclick = async function () {
+  function newObj(){
+    allowEdit();
     myObj.id = 0; document.getElementById("id").innerHTML = myObj.id;
     myObj.name = ""; document.getElementById("name").innerHTML = myObj.name;
     myObj.version = 0; document.getElementById("version").innerHTML = myObj.version;
@@ -337,9 +305,14 @@ function main(selectFile) {
     myObj.remarks = ""; document.getElementById("remarks").innerHTML = myObj.remarks;
     myObj.actions = [];
     items = [];
+  }
+  document.getElementById("new").onclick = async function () {
+    newObj();
     showTimeLine();
   };
 }
+
+// for double click to add actions
 async function addPrompt(title, text, inputValue, callback) {
   const { value: p0 } = await Swal.fire({
     title: 'function',
@@ -379,6 +352,7 @@ async function addPrompt(title, text, inputValue, callback) {
   }
 }
 
+//for double click actions to update the action
 async function updatePrompt(title, text, inputValue, callback) {
   const {
     value: formValues
@@ -424,23 +398,22 @@ function alertMaxLiquid() {
     'You can only pour 1 liquid 3 times'
   )
 }
+function alertNoName() {
+  Swal.fire(
+    'Please input your name'
+  )
+}
+function alertNoID() {
+  Swal.fire(
+    'Please input your ID'
+  )
+}
 
 function sendObj(filename, myObj) {
   let data = new FormData();
   data.append('f', 'WRITE');
-  data.append('filename', filename);
-  data.append('name', myObj.name);
-  data.append('id', myObj.id);
-  data.append('version', myObj.version);
-
-  let currentTime = new Date();
-  data.append('modified_date', currentTime.toString());
-  data.append('uuid', myObj.uuid);
-  data.append('remarks', myObj.remarks);
-  for (let i = 0; i < myObj.actions.length; i++) {
-    data.append('actions', myObj.actions[i].command);
-    data.append('actions', myObj.actions[i].time);
-  }
+  let result = JSON.stringify(myObj);
+  data.append('obj', result);
   xmlhttp.open("POST", filename, true);
   xmlhttp.send(data);
 }
@@ -525,7 +498,12 @@ document.getElementById("edit").onclick = async function () {
     confirmButtonText: 'Yes'
   }).then((result) => {
     if (result.value) {
-      document.getElementById("nameButton").disabled = false;
+      allowEdit()
+    }
+  })
+};
+function allowEdit(){
+  document.getElementById("nameButton").disabled = false;
       document.getElementById("versionButton").disabled = false;
       document.getElementById("remarksButton").disabled = false;
       document.getElementById("saveButton").disabled = false;
@@ -543,10 +521,7 @@ document.getElementById("edit").onclick = async function () {
       timeline.destroy();
       timeline = new vis.Timeline(container, items, options);
       timeline.on('select', onSelect);
-    }
-  })
-};
-
+}
 
 document.getElementById("addButton").onclick = async function () {
   if (myObj.actions.length >= 255) {
@@ -557,40 +532,40 @@ document.getElementById("addButton").onclick = async function () {
       value: formValues
     } = await Swal.fire(
       {
-      title: 'Add Actions',
-      showCancelButton: true,
-      html: addHTML(),
-      customClass: 'swal2-overflow',
-      onOpen: function () {
-        $('#timepicker').timepicker({
-          minuteMax: 5,
-          timeFormat: 'mm:ss'
-      });
-      },
-      focusConfirm: false,
-      preConfirm: () => {
-        let t = calculateSeconds(document.getElementById('timepicker').value);
-        console.log(t);
-        let p1 = document.getElementById('swal-input1').value;
-        let p2 = document.getElementById('swal-input2').value;
-        let words = p1.split(' ');
-        let result;
-        if (p1 == 'WOKTEMP' || p1 == 'WOKY' || p1 == 'POURBOX' || p1 == 'PWATER' || p1 == 'POIL' || p1 == 'PSTRACH') {
-          result = {
-            command: p1 + ' ' + p2,
-            time: t
+        title: 'Add Actions',
+        showCancelButton: true,
+        html: addHTML(),
+        customClass: 'swal2-overflow',
+        onOpen: function () {
+          $('#timepicker').timepicker({
+            minuteMax: 5,
+            timeFormat: 'mm:ss'
+          });
+        },
+        focusConfirm: false,
+        preConfirm: () => {
+          let t = calculateSeconds(document.getElementById('timepicker').value);
+          console.log(t);
+          let p1 = document.getElementById('swal-input1').value;
+          let p2 = document.getElementById('swal-input2').value;
+          let words = p1.split(' ');
+          let result;
+          if (p1 == 'WOKTEMP' || p1 == 'WOKY' || p1 == 'POURBOX' || p1 == 'PWATER' || p1 == 'POIL' || p1 == 'PSTRACH') {
+            result = {
+              command: p1 + ' ' + p2,
+              time: t
+            }
+            return result;
           }
-          return result;
-        }
-        else {
-          result = {
-            command: p1,
-            time: t
+          else {
+            result = {
+              command: p1,
+              time: t
+            }
+            return result;
           }
-          return result;
         }
-      }
-    })
+      })
     if (formValues) {
       //console.log(inputValue);
       console.log(formValues.command);
@@ -645,10 +620,18 @@ document.getElementById("saveButton").onclick = async function () {
     confirmButtonText: 'Save'
   }).then((result) => {
     if (result.value) {
+      if (myObj.name == ''){
+        alertNoName();
+        return;
+      }
+      else if(myObj.id == 0){
+        alertNoName();
+        return;
+      }
       updateMyObj();
-      filename = myObj.id + '_v' + myObj.version.toString() + '.json';
-      console.log(filename);
-      sendObj(filename, myObj);
+      myObj.filename = myObj.id + '_v' + myObj.version.toString() + '.json';
+      console.log(myObj.filename);
+      sendObj(myObj.filename, myObj);
     }
   })
 };
@@ -663,20 +646,7 @@ let openFile = function (event) {
   filename = input.files[0].name;
   main(true);
 };
-/*
-<input id="saveAs" type='file' accept='' class="saveAs" onchange='saveAs(event)' disabled></input>
-let saveAs = function(event){
-  var input = event.target;
-  var reader = new FileReader();
-  reader.onload = function () {
-    var dataURL = reader.result;
-  };
-  reader.readAsDataURL(input.files[0]);
-  filename = input.files[0].name;
-  myObj.uuid = uuidv4();
-  myObj.version = parseInt(myObj.version)+1;
-  sendObj(filename,myObj);
-}*/
+
 
 function onSelect(properties) {
   let id = properties.items[0];
@@ -754,6 +724,10 @@ function updateMyObj() {
   myObj.oil = [];
   myObj.strach = [];
   myObj.actions.forEach(updateArray);
+  myObj.modified_date = (new Date()).toString();
+  document.getElementById("modified_date").innerHTML = myObj.modified_date;
+  document.getElementById("version").innerHTML = myObj.version;
+  document.getElementById("uuid").innerHTML = myObj.uuid;
   function updateArray(item) {
     let words = item.command.split(' ');
     let tempItem;
@@ -780,9 +754,9 @@ function updateMyObj() {
     }
   }
 }
-function calculateSeconds(string){
+function calculateSeconds(string) {
   words = string.split(':');
-  return parseInt(words[0])*60+parseInt(words[1]);
+  return parseInt(words[0]) * 60 + parseInt(words[1]);
 }
 function updateHTML(command) {
   let words = command.split(' ');
@@ -819,4 +793,39 @@ function addHTML() {
     'parameter<input id="swal-input2" class="swal2-input">' +
     '<input id="timepicker" class="swal2-input">';
   return result;
+}
+function showTimeLine() {
+  for (let i = 0; i < myObj.actions.length; i++) {
+    let tempTime = myObj.actions[i].time;
+    let words = myObj.actions[i].command.split(' ');
+    let tempContent = commandToContent(myObj.actions[i].command);
+    items[i] = {
+      id: i,
+      content: tempContent,
+      command: myObj.actions[i].command,
+      length: time_dict.get(words[0]),
+      start: new Date().setTime(startTime.getTime() + myObj.actions[i].time * 1000),
+      end: new Date().setTime(startTime.getTime() + myObj.actions[i].time * 1000 + time_dict.get(words[0])),
+    };
+    myObj.actions[i] = {
+      id: i,
+      command: items[i].command,
+      time: tempTime,
+    }
+  }
+  // Create a Timeline
+  if (firstDraw) {
+    timeline.destroy();
+    console.log("firstTimeline")
+    timeline = new vis.Timeline(container, items, options);
+    timeline.on('select', onSelect);
+    firstDraw = false;
+  }
+  else {
+    timeline.destroy();
+    timeline = new vis.Timeline(container, items, options);
+    timeline.on('select', onSelect);
+    timeline.redraw();
+  }
+
 }

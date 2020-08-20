@@ -4,6 +4,7 @@ var path = require('path');
 let result;
 var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 const { parse } = require('querystring');
+
 http.createServer(function (request, response) {
     if (request.method == 'POST') {
         let body = [];
@@ -17,20 +18,18 @@ http.createServer(function (request, response) {
             lines = body.split(/\r\n|\r|\n/);
             let f = lines[3];
             if (f == "WRITE")
-                write(lines);
+                write(lines[7]);
             if (f == "READ")
                 read(lines);
             if (f == "BOX") {
                 var text = fs.readFileSync('ingredient.json', 'utf8');
                 let ingredients = JSON.parse(text);
-                console.log(ingredients.box);
                 result = {
                     name: 'box',
                     box: ingredients.box
                 };
             };
         });
-        console.log(JSON.stringify(result));
         response.end(JSON.stringify(result));
     }
 
@@ -79,27 +78,13 @@ http.createServer(function (request, response) {
     });
 }).listen(3000);
 console.log('Server running at http://127.0.0.1:3000/');
-function write(lines) {
-    let output, actions = [];
-    let j = 0;
-    for (let i = 35; i < lines.length; i += 8) {
-        actions[j] = {
-            command: lines[i],
-            time: parseInt(lines[i + 4]),
-        };
-        j += 1;
-    }
-    output = {
-        filename: lines[7],
-        name: lines[11],
-        id: parseInt(lines[15]),
-        version: parseInt(lines[19]),
-        modified_date: lines[23],
-        uuid: lines[27],
-        remarks: lines[31],
-        actions: actions,
-    };
-    fs.writeFile(output.filename, JSON.stringify(output, null, "\t"), function (err) {
+function write(s) {
+    let output = JSON.parse(s);
+    console.log(output.name);
+    let filename = output.filename;
+    delete output.filename;
+    console.log(filename);
+    fs.writeFile(filename, JSON.stringify(output, null, "\t"), function (err) {
         if (err) throw err;
         console.log('saved!');
     });
