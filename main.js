@@ -40,12 +40,12 @@ let myObj = {
   version: 0,
   remarks: '',
   actions: [],
-  box: [],
+  box: [{id:-1},{id:-1},{id:-1},{id:-1},{id:-1}],
   water: [],
   oil: [],
   starch: []
 };
-let items = [];
+let items = [],ingredientForBoxSelect = [];
 let firstDraw = true;
 var container = document.getElementById('visualization');
 let startTime = new Date(2020, 0, 1, 0, 0, 0);
@@ -238,13 +238,14 @@ let timeline = new vis.Timeline(container, items, options);
 data.append('f', 'BOX');
 xmlhttp.open("POST", 'ingredient.json', true);
 xmlhttp.send(data);
+
+//resive data from server
 xmlhttp.onreadystatechange = function () {
   if (this.readyState == 4 && this.status == 200) {
     let rec = JSON.parse(this.responseText);
     if (rec.name == 'box') {
-      console.log(1);
       ingredients = rec;
-      console.log(rec.box);
+      generateIngredientForBoxSelect(ingredients);
     }
     else {
       console.log(rec.name);
@@ -256,10 +257,17 @@ xmlhttp.onreadystatechange = function () {
       document.getElementById("uuid").innerHTML = myObj.uuid;
       document.getElementById("remarks").innerHTML = myObj.remarks;
       numWater = myObj.water.length; numOil = myObj.oil.length; numStarch = myObj.starch.length;
+      document.getElementById("box1id").innerHTML = myObj.box[0].id;
+      document.getElementById("box2id").innerHTML = myObj.box[1].id;
+      document.getElementById("box3id").innerHTML = myObj.box[2].id;
+      document.getElementById("box4id").innerHTML = myObj.box[3].id;
+      document.getElementById("box5id").innerHTML = myObj.box[4].id;
       showTimeLine();
     }
   }
 };
+
+
 window.onload = async function () {
   const { value: file } = await Swal.fire({
     title: 'Select file',
@@ -286,7 +294,24 @@ window.onload = async function () {
   else {
     main(false);
   }
+
+  document.getElementById("b1").onclick = function(){
+    updateBox(1);
+  }
+  document.getElementById("b2").onclick = function(){
+    updateBox(2);
+  }
+  document.getElementById("b3").onclick = function(){
+    updateBox(3);
+  }
+  document.getElementById("b4").onclick = function(){
+    updateBox(4);
+  }
+  document.getElementById("b5").onclick = function(){
+    updateBox(5);
+  }
 }
+
 function main(selectFile) {
   if (selectFile) {
     xmlhttp.open("GET", filename, true);
@@ -464,7 +489,7 @@ document.getElementById("idButton").onclick = async function () {
   })
 
   if (id) {
-    myObj.id = id;
+    myObj.id = parseInt(id);
     document.getElementById("id").innerHTML = myObj.id;
   }
 
@@ -608,7 +633,6 @@ document.getElementById("addButton").onclick = async function () {
     }
   }
 };
-
 //save recipe
 document.getElementById("saveButton").onclick = async function () {
   Swal.fire({
@@ -625,16 +649,32 @@ document.getElementById("saveButton").onclick = async function () {
         return;
       }
       else if(myObj.id == 0){
-        alertNoName();
+        alertNoID();
         return;
       }
+      console.log(myObj.box.length);
       updateMyObj();
       myObj.filename = myObj.id + '_v' + myObj.version.toString() + '.json';
-      console.log(myObj.filename);
       sendObj(myObj.filename, myObj);
     }
   })
 };
+
+
+async function updateBox(number){
+  const { value: ingredient } = await Swal.fire({
+    title: 'Select id of the box',
+    input: 'select',
+    inputOptions: ingredientForBoxSelect,
+    inputPlaceholder: 'Select a box',
+    showCancelButton: true,
+  })
+  if (ingredient) {
+    myObj.box[number].id = ingredients.box[ingredient].id;
+    document.getElementById("box"+number+"id").innerHTML = myObj.box[number].id;
+
+  }
+}
 
 let openFile = function (event) {
   var input = event.target;
@@ -646,7 +686,6 @@ let openFile = function (event) {
   filename = input.files[0].name;
   main(true);
 };
-
 
 function onSelect(properties) {
   let id = properties.items[0];
@@ -722,7 +761,7 @@ function updateMyObj() {
   myObj.version = parseInt(myObj.version) + 1;
   myObj.water = [];
   myObj.oil = [];
-  myObj.strach = [];
+  myObj.starch = [];
   myObj.actions.forEach(updateArray);
   myObj.modified_date = (new Date()).toString();
   document.getElementById("modified_date").innerHTML = myObj.modified_date;
@@ -750,7 +789,7 @@ function updateMyObj() {
         portion: parseInt(words[1]),
         time: item.time
       };
-      myObj.strach.push(tempItem);
+      myObj.starch.push(tempItem);
     }
   }
 }
@@ -828,4 +867,9 @@ function showTimeLine() {
     timeline.redraw();
   }
 
+}
+function generateIngredientForBoxSelect(ingredients){
+  ingredients.box.forEach(function(element){
+    ingredientForBoxSelect.push(element.id.toString() + element.name + ' ' + element.content);
+  })
 }

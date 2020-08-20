@@ -1,0 +1,29 @@
+{
+	"name": "咖喱牛肉",
+	"id": 12,
+	"uuid": "1c312099-86d4-4b7f-868c-536f3e51daf0",
+	"modified_date": "Thu Aug 20 2020 16:04:41 GMT+0800 (香港標準時間)",
+	"version": 1,
+	"remarks": "",
+	"actions": [],
+	"box": [
+		{
+			"id": -1
+		},
+		{
+			"id": -1
+		},
+		{
+			"id": -1
+		},
+		{
+			"id": -1
+		},
+		{
+			"id": -1
+		}
+	],
+	"water": [],
+	"oil": [],
+	"starch": []
+}
