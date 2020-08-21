@@ -1,4 +1,6 @@
 var http = require('http');
+var short = require('short-uuid');
+var translator = short();
 var fs = require('fs');
 var path = require('path');
 let result;
@@ -9,7 +11,7 @@ http.createServer(function (request, response) {
     if (request.method == 'POST') {
         let body = [];
         request.on('error', (err) => {
-            console.error(err);
+            console.error(err);                                                                                                                                                                                                                                                                         
         }).on('data', (chunk) => {
             body.push(chunk);
         }).on('end', () => {
@@ -81,8 +83,8 @@ console.log('Server running at http://127.0.0.1:3000/');
 function write(s) {
     let output = JSON.parse(s);
     console.log(output.name);
-    let filename = output.filename;
     delete output.filename;
+    let filename = output.id+'_v'+output.version+'_'+translator.fromUUID(output.uuid)+'.json';
     console.log(filename);
     fs.writeFile(filename, JSON.stringify(output, null, "\t"), function (err) {
         if (err) throw err;

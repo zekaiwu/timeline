@@ -1,0 +1,75 @@
+{
+	"name": "炒四絲",
+	"id": 41,
+	"version": 14,
+	"modified_date": "Fri Aug 21 2020 13:55:34 GMT+0800 (香港標準時間)",
+	"uuid": "c45e0a9e-1060-4d46-b15c-027578b8231a",
+	"remarks": "test on v2 machine",
+	"actions": [
+		{
+			"id": 0,
+			"command": "WOKOIL ",
+			"time": 0
+		},
+		{
+			"id": 1,
+			"command": "WOKCLEAN ",
+			"time": 170
+		},
+		{
+			"id": 2,
+			"command": "WOKTEMP 500",
+			"time": 74
+		},
+		{
+			"id": 3,
+			"command": "PWATER 230",
+			"time": 29
+		},
+		{
+			"id": 4,
+			"command": "WOKTEMP 1000",
+			"time": 9
+		},
+		{
+			"id": 5,
+			"command": "POURBOX 3",
+			"time": 238
+		},
+		{
+			"id": 6,
+			"command": "WOKTEMP 123",
+			"time": 220
+		}
+	],
+	"box": [
+		{
+			"id": 1,
+			"type": 0
+		},
+		{
+			"id": 2,
+			"type": 1
+		},
+		{
+			"id": 3,
+			"type": 2
+		},
+		{
+			"id": 4,
+			"type": 3
+		},
+		{
+			"id": 5,
+			"type": 4
+		}
+	],
+	"oil": [],
+	"water": [
+		{
+			"portion": 230,
+			"time": 29
+		}
+	],
+	"starch": []
+}

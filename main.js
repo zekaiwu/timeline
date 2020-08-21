@@ -869,6 +869,7 @@ function showTimeLine() {
 
 }
 function generateIngredientForBoxSelect(ingredients){
+  ingredientForBoxSelect = [];
   ingredients.box.forEach(function(element){
     ingredientForBoxSelect.push(element.id.toString() + element.name + ' ' + element.content);
   })
