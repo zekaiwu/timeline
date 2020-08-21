@@ -32,7 +32,7 @@ let time_dict = new Map([
 var xmlhttp = new XMLHttpRequest(), xmlhttp1 = new XMLHttpRequest();
 let filename = "example.json";
 let myObj = {
-  filename : '',
+  filename: '',
   name: '',
   id: 0,
   uuid: '',
@@ -40,12 +40,12 @@ let myObj = {
   version: 0,
   remarks: '',
   actions: [],
-  box: [{id:-1},{id:-1},{id:-1},{id:-1},{id:-1}],
+  box: [{ id: -1 }, { id: -1 }, { id: -1 }, { id: -1 }, { id: -1 }],
   water: [],
   oil: [],
   starch: []
 };
-let items = [],ingredientForBoxSelect = [];
+let items = [], ingredientForBoxSelect = [];
 let firstDraw = true;
 var container = document.getElementById('visualization');
 let startTime = new Date(2020, 0, 1, 0, 0, 0);
@@ -295,19 +295,19 @@ window.onload = async function () {
     main(false);
   }
 
-  document.getElementById("b1").onclick = function(){
+  document.getElementById("b1").onclick = function () {
     updateBox(1);
   }
-  document.getElementById("b2").onclick = function(){
+  document.getElementById("b2").onclick = function () {
     updateBox(2);
   }
-  document.getElementById("b3").onclick = function(){
+  document.getElementById("b3").onclick = function () {
     updateBox(3);
   }
-  document.getElementById("b4").onclick = function(){
+  document.getElementById("b4").onclick = function () {
     updateBox(4);
   }
-  document.getElementById("b5").onclick = function(){
+  document.getElementById("b5").onclick = function () {
     updateBox(5);
   }
 }
@@ -321,7 +321,7 @@ function main(selectFile) {
     newObj();
     showTimeLine();
   }
-  function newObj(){
+  function newObj() {
     allowEdit();
     myObj.id = 0; document.getElementById("id").innerHTML = myObj.id;
     myObj.name = ""; document.getElementById("name").innerHTML = myObj.name;
@@ -527,25 +527,25 @@ document.getElementById("edit").onclick = async function () {
     }
   })
 };
-function allowEdit(){
+function allowEdit() {
   document.getElementById("nameButton").disabled = false;
-      document.getElementById("versionButton").disabled = false;
-      document.getElementById("remarksButton").disabled = false;
-      document.getElementById("saveButton").disabled = false;
-      //document.getElementById("saveAs").disabled = false;
-      document.getElementById("addButton").disabled = false;
-      document.getElementById("updateButton").disabled = false;
-      document.getElementById("idButton").disabled = false;
-      options.editable = {
-        add: false,
-        remove: true,
-        updateTime: true,
-        overrideItems: true,
-      };
-      options.itemsAlwaysDraggable = { item: true };
-      timeline.destroy();
-      timeline = new vis.Timeline(container, items, options);
-      timeline.on('select', onSelect);
+  document.getElementById("versionButton").disabled = false;
+  document.getElementById("remarksButton").disabled = false;
+  document.getElementById("saveButton").disabled = false;
+  //document.getElementById("saveAs").disabled = false;
+  document.getElementById("addButton").disabled = false;
+  document.getElementById("updateButton").disabled = false;
+  document.getElementById("idButton").disabled = false;
+  options.editable = {
+    add: false,
+    remove: true,
+    updateTime: true,
+    overrideItems: true,
+  };
+  options.itemsAlwaysDraggable = { item: true };
+  timeline.destroy();
+  timeline = new vis.Timeline(container, items, options);
+  timeline.on('select', onSelect);
 }
 
 document.getElementById("addButton").onclick = async function () {
@@ -644,11 +644,11 @@ document.getElementById("saveButton").onclick = async function () {
     confirmButtonText: 'Save'
   }).then((result) => {
     if (result.value) {
-      if (myObj.name == ''){
+      if (myObj.name == '') {
         alertNoName();
         return;
       }
-      else if(myObj.id == 0){
+      else if (myObj.id == 0) {
         alertNoID();
         return;
       }
@@ -661,7 +661,7 @@ document.getElementById("saveButton").onclick = async function () {
 };
 
 
-async function updateBox(number){
+async function updateBox(number) {
   const { value: ingredient } = await Swal.fire({
     title: 'Select id of the box',
     input: 'select',
@@ -671,7 +671,7 @@ async function updateBox(number){
   })
   if (ingredient) {
     myObj.box[number].id = ingredients.box[ingredient].id;
-    document.getElementById("box"+number+"id").innerHTML = myObj.box[number].id;
+    document.getElementById("box" + number + "id").innerHTML = myObj.box[number].id;
 
   }
 }
@@ -714,11 +714,19 @@ function onSelect(properties) {
       title: items[ti].command,
       showCancelButton: true,
       html: updateHTML(items[ti].command),
+      customClass: 'swal2-overflow',
+      onOpen: function () {
+        $('#timepicker').timepicker({
+          minuteMax: 5,
+          timeFormat: 'mm:ss'
+        });
+      },
       focusConfirm: false,
       preConfirm: () => {
+        let t = calculateSeconds(document.getElementById('timepicker').value);
         return [
           document.getElementById('swal-input2').value,
-          document.getElementById('swal-input3').value,
+          t,
         ]
       }
     })
@@ -810,7 +818,7 @@ function updateHTML(command) {
   else {
     result += '<span id=swal-input2 value=""></span>';
   }
-  result += 'time<input id="swal-input3" class="swal2-input">' +
+  result += '<input id="timepicker" class="swal2-input">' +
     '</html>';
   return result;
 }
@@ -868,9 +876,9 @@ function showTimeLine() {
   }
 
 }
-function generateIngredientForBoxSelect(ingredients){
+function generateIngredientForBoxSelect(ingredients) {
   ingredientForBoxSelect = [];
-  ingredients.box.forEach(function(element){
+  ingredients.box.forEach(function (element) {
     ingredientForBoxSelect.push(element.id.toString() + element.name + ' ' + element.content);
   })
 }
