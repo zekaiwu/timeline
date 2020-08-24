@@ -412,36 +412,7 @@ function prettyConfirm(title, text, callback) {
     }
   })
 }
-function alertMaxAction() {
-  Swal.fire(
-    'Maximun amount of action is 255'
-  )
-}
-function alertMaxLiquid() {
-  Swal.fire(
-    'You can only pour 1 liquid 3 times'
-  )
-}
-function alertNoName() {
-  Swal.fire(
-    'Please input your name'
-  )
-}
-function alertNoID() {
-  Swal.fire(
-    'Please input your ID'
-  )
-}
-function alertWOKY() {
-  Swal.fire(
-    'Range of WOKY should be 0-2000'
-  )
-};
-function alertBox() {
-  Swal.fire(
-    'Range of BOX should be 1-5'
-  )
-}
+
 
 
 function sendObj(filename, myObj) {
@@ -865,7 +836,7 @@ function addHTML() {
     '<option value="WOKY">設置轉速</option>' +
     '</select>' +
     'parameter<input id="swal-input2" class="swal2-input">' +
-    'time<input id="timepicker" class="swal2-input">';
+    'time<input id="timepicker" class="swal2-input" value="00:00">';
   return result;
 }
 function showTimeLine() {
@@ -908,4 +879,34 @@ function generateIngredientForBoxSelect(ingredients) {
   ingredients.box.forEach(function (element) {
     ingredientForBoxSelect.push(element.id.toString() + element.name + ' ' + element.content);
   })
+}
+function alertMaxAction() {
+  Swal.fire(
+    'Maximun amount of action is 255'
+  )
+}
+function alertMaxLiquid() {
+  Swal.fire(
+    'You can only pour 1 liquid 3 times'
+  )
+}
+function alertNoName() {
+  Swal.fire(
+    'Please input your name'
+  )
+}
+function alertNoID() {
+  Swal.fire(
+    'Please input your ID'
+  )
+}
+function alertWOKY() {
+  Swal.fire(
+    'Range of WOKY should be 0-2000'
+  )
+};
+function alertBox() {
+  Swal.fire(
+    'Range of BOX should be 1-5'
+  )
 }
