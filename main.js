@@ -6,7 +6,6 @@ let command_dict = new Map([
   ['PSTARCH', '芡汁'],
   ['WOKTEMP', '設置溫度'],
   ['POURFOOD', '上菜'],
-  ['WOKCLEAN', '洗鍋'],
   ['WOKY', '設置轉速'],
 ]);
 let time_dict = new Map([
@@ -832,7 +831,6 @@ function addHTML() {
     '<option value="PSTARCH">芡汁</option>' +
     '</optgroup>' +
     '<option value="POURFOOD">上菜</option>' +
-    '<option value="WOKCLEAN">洗鍋</option>' +
     '<option value="WOKY">設置轉速</option>' +
     '</select>' +
     'parameter<input id="swal-input2" class="swal2-input">' +
