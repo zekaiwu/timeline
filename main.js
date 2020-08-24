@@ -294,7 +294,6 @@ window.onload = async function () {
   else {
     main(false);
   }
-
   document.getElementById("b1").onclick = function () {
     updateBox(1);
   }
@@ -563,8 +562,9 @@ document.getElementById("addButton").onclick = async function () {
         customClass: 'swal2-overflow',
         onOpen: function () {
           $('#timepicker').timepicker({
-            minuteMax: 5,
-            timeFormat: 'mm:ss'
+            minuteMax: 4,
+            timeFormat: 'mm:ss',
+            showButtonPanel : false,
           });
         },
         focusConfirm: false,
@@ -670,8 +670,9 @@ async function updateBox(number) {
     showCancelButton: true,
   })
   if (ingredient) {
-    myObj.box[number].id = ingredients.box[ingredient].id;
-    document.getElementById("box" + number + "id").innerHTML = myObj.box[number].id;
+    console.log(number-1);
+    myObj.box[number-1].id = ingredients.box[ingredient].id;
+    document.getElementById("box" + number + "id").innerHTML = myObj.box[number-1].id;
 
   }
 }
@@ -702,7 +703,8 @@ function onSelect(properties) {
   console.log(myObj.actions[ti2]);
   if (words[0] == 'POURBOX') {
     for (let i = 0; i < ingredients.box.length; i++) {
-      if (myObj.box[parseInt(words[1])].id == ingredients.box[i].id) {
+      if (myObj.box[parseInt(words[1])-1].id == 
+        ingredients.box[i].id) {
         showBox(ingredients.box[i].content);
       }
     }
@@ -718,7 +720,8 @@ function onSelect(properties) {
       onOpen: function () {
         $('#timepicker').timepicker({
           minuteMax: 5,
-          timeFormat: 'mm:ss'
+          timeFormat: 'mm:ss',
+          showButtonPanel : false,
         });
       },
       focusConfirm: false,
@@ -818,7 +821,7 @@ function updateHTML(command) {
   else {
     result += '<span id=swal-input2 value=""></span>';
   }
-  result += '<input id="timepicker" class="swal2-input">' +
+  result += 'time<input id="timepicker" class="swal2-input">' +
     '</html>';
   return result;
 }
@@ -838,7 +841,7 @@ function addHTML() {
     '<option value="WOKY">設置轉速</option>' +
     '</select>' +
     'parameter<input id="swal-input2" class="swal2-input">' +
-    '<input id="timepicker" class="swal2-input">';
+    'time<input id="timepicker" class="swal2-input">';
   return result;
 }
 function showTimeLine() {
