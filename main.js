@@ -187,8 +187,8 @@ let options = {
               numWater--;
             if (words[0] == 'POIL')
               numWater--;
-            if (words[0] == 'PSTRACH')
-              numStrach--;
+            if (words[0] == 'PSTARCH')
+              numStarch--;
             myObj.actions.splice(i, 1);
             break;
           }
@@ -352,7 +352,7 @@ async function addPrompt(title, text, inputValue, callback) {
       '液體': {
         'PWATER': '加水',
         'POIL': '下油',
-        'PSTRACH': '芡汁',
+        'PSTARCH': '芡汁',
       },
     }
   })
@@ -432,6 +432,17 @@ function alertNoID() {
     'Please input your ID'
   )
 }
+function alertWOKY() {
+  Swal.fire(
+    'Range of WOKY should be 0-2000'
+  )
+};
+function alertBox() {
+  Swal.fire(
+    'Range of BOX should be 1-5'
+  )
+}
+
 
 function sendObj(filename, myObj) {
   let data = new FormData();
@@ -444,7 +455,7 @@ function sendObj(filename, myObj) {
 function commandToContent(command) {
   let words = command.split(' ');
   let tempContent;
-  if (words[0] == 'PWATER' || words[0] == 'WOKTEMP' || words[0] == 'WOKY' || words[0] == 'POURBOX' || words[0] == 'POIL' || words[0] == 'PSTRACH') {
+  if (words[0] == 'PWATER' || words[0] == 'WOKTEMP' || words[0] == 'WOKY' || words[0] == 'POURBOX' || words[0] == 'POIL' || words[0] == 'PSTARCH') {
     tempContent = command_dict.get(words[0]) + words[1];
   }
   else tempContent = command_dict.get(words[0]);
@@ -574,8 +585,8 @@ document.getElementById("addButton").onclick = async function () {
           let p1 = document.getElementById('swal-input1').value;
           let p2 = document.getElementById('swal-input2').value;
           let words = p1.split(' ');
-          let result;
-          if (p1 == 'WOKTEMP' || p1 == 'WOKY' || p1 == 'POURBOX' || p1 == 'PWATER' || p1 == 'POIL' || p1 == 'PSTRACH') {
+          let result;   
+          if (p1 == 'WOKTEMP' || p1 == 'WOKY' || p1 == 'POURBOX' || p1 == 'PWATER' || p1 == 'POIL' || p1 == 'PSTARCH') {
             result = {
               command: p1 + ' ' + p2,
               time: t
@@ -599,6 +610,19 @@ document.getElementById("addButton").onclick = async function () {
         alertMaxLiquid();
         return;
       }
+      if(words[0]=='WOKY'){
+        if (parseInt(words[1])<0 || parseInt(words[1])>2000){
+          alertWOKY();
+          return;
+        }
+      }
+      if(words[0]=='POURBOX'){
+        if (parseInt(words[1])<1 || parseInt(words[1])>5){
+          alertBox();
+          return;
+        }
+      }
+
       let tempID;
       for (let i = 0; i <= myObj.actions.length; i++) {
         let occupied = false;
@@ -761,10 +785,10 @@ function liquidMax(command) {
     if (numOil >= 3)
       return true;
     else numOil++;
-  if (command == 'PSTRACH')
-    if (numStrach >= 3)
+  if (command == 'PSTARCH')
+    if (numStarch >= 3)
       return true;
-    else numStrach++;
+    else numStarch++;
   return false;
 }
 function updateMyObj() {
@@ -834,7 +858,7 @@ function addHTML() {
     '<optgroup label="加液體">' +
     '<option value="PWATER">加水</option>' +
     '<option value="POIL">下油</option>' +
-    '<option value="PSTRACH">芡汁</option>' +
+    '<option value="PSTARCH">芡汁</option>' +
     '</optgroup>' +
     '<option value="POURFOOD">上菜</option>' +
     '<option value="WOKCLEAN">洗鍋</option>' +
