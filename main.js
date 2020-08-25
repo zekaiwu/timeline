@@ -200,7 +200,15 @@ let options = {
     });
   },
 
-  onMoving: function (item, callback) { 
+  onMoving: function (item, callback) {
+    if ((item.end - item.start) != item.length) {
+      if (item.start + item.length - endTime >= 0) {
+        item.start = endTime - item.length;
+        item.end = endTime;
+      } else {
+        item.end.setTime(item.start.getTime() + item.length);
+      }
+    }
     if (item.start < startTime) {
       item.start = startTime;
       item.end.setTime(item.start.getTime() + item.length);
@@ -324,7 +332,7 @@ function main(selectFile) {
   };
 }
 
-// for double click to add actions
+// for double click to add actions, no use now
 async function addPrompt(title, text, inputValue, callback) {
   const { value: p0 } = await Swal.fire({
     title: 'function',
@@ -364,7 +372,7 @@ async function addPrompt(title, text, inputValue, callback) {
   }
 }
 
-//for double click actions to update the action
+//for double click actions to update the action, no use now
 async function updatePrompt(title, text, inputValue, callback) {
   const {
     value: formValues
@@ -385,6 +393,7 @@ async function updatePrompt(title, text, inputValue, callback) {
     callback(formValues);
   }
 }
+
 function prettyConfirm(title, text, callback) {
   Swal.fire({
     title: 'Are you sure?',
@@ -405,13 +414,13 @@ function sendObj(filename, myObj) {
   let data = new FormData();
   data.append('f', 'WRITE');
   let tactions = [], t2actions = myObj.actions;
-  for(let i=0;i<myObj.actions.length;i++){
-    tactions.push({command : myObj.actions[i].command, time : myObj.actions[i].time});
+  for (let i = 0; i < myObj.actions.length; i++) {
+    tactions.push({ command: myObj.actions[i].command, time: myObj.actions[i].time });
   }
   let tobj = myObj;
   tobj.actions = tactions;
   let result = JSON.stringify(tobj);
-  myObj.actions=t2actions;
+  myObj.actions = t2actions;
   console.log(JSON.stringify(myObj))
   data.append('obj', result);
   xmlhttp.open("POST", filename, true);
@@ -427,7 +436,7 @@ function commandToContent(command) {
   return tempContent;
 }
 //change other information when click the botton
-document.getElementById("showobj").onclick = function(){
+document.getElementById("showobj").onclick = function () {
   console.log(JSON.stringify(myObj));
 }
 document.getElementById("nameButton").onclick = async function () {
@@ -512,7 +521,7 @@ function allowEdit() {
   document.getElementById("saveButton").disabled = false;
   //document.getElementById("saveAs").disabled = false;
   document.getElementById("addButton").disabled = false;
-  document.getElementById("updateButton").disabled = false;
+  //document.getElementById("updateButton").disabled = false;
   document.getElementById("idButton").disabled = false;
   options.editable = {
     add: false,
@@ -543,7 +552,7 @@ document.getElementById("addButton").onclick = async function () {
           $('#timepicker').timepicker({
             minuteMax: 4,
             timeFormat: 'mm:ss',
-            showButtonPanel : false,
+            showButtonPanel: false,
           });
         },
         focusConfirm: false,
@@ -552,7 +561,7 @@ document.getElementById("addButton").onclick = async function () {
           let p1 = document.getElementById('swal-input1').value;
           let p2 = document.getElementById('swal-input2').value;
           let words = p1.split(' ');
-          let result;   
+          let result;
           if (p1 == 'WOKTEMP' || p1 == 'WOKY' || p1 == 'POURBOX' || p1 == 'PWATER' || p1 == 'POIL' || p1 == 'PSTARCH') {
             result = {
               command: p1 + ' ' + p2,
@@ -577,14 +586,14 @@ document.getElementById("addButton").onclick = async function () {
         alertMaxLiquid();
         return;
       }
-      if(words[0]=='WOKY'){
-        if (parseInt(words[1])<0 || parseInt(words[1])>2000){
+      if (words[0] == 'WOKY') {
+        if (parseInt(words[1]) < 0 || parseInt(words[1]) > 2000) {
           alertWOKY();
           return;
         }
       }
-      if(words[0]=='POURBOX'){                
-        if (parseInt(words[1])<1 || parseInt(words[1])>5){
+      if (words[0] == 'POURBOX') {
+        if (parseInt(words[1]) < 1 || parseInt(words[1]) > 5) {
           alertBox();
           return;
         }
@@ -604,7 +613,7 @@ document.getElementById("addButton").onclick = async function () {
           break;
         }
       }
-      console.log("add id "+tempID);
+      console.log("add id " + tempID);
       let newAction = {
         id: tempID,
         command: formValues.command,
@@ -655,9 +664,9 @@ async function updateBox(number) {
     showCancelButton: true,
   })
   if (ingredient) {
-    console.log(number-1);
-    myObj.box[number-1].id = ingredients.box[ingredient].id;
-    document.getElementById("box" + number + "id").innerHTML = myObj.box[number-1].id;
+    console.log(number - 1);
+    myObj.box[number - 1].id = ingredients.box[ingredient].id;
+    document.getElementById("box" + number + "id").innerHTML = myObj.box[number - 1].id;
 
   }
 }
@@ -674,21 +683,25 @@ let openFile = function (event) {
 };
 
 function onSelect(properties) {
-  let id = properties.items[0];
-  console.log(id);
-  let ti;
-  for (let i = 0; i < myObj.actions.length; i++) {//find the selected element in myObj array
-    if (myObj.actions[i].id == id)
-      ti = i;
+  let id = properties.items[0],ti;
+  if (typeof(id)=='undefined' || document.getElementById("addButton").disabled == true) {
+    document.getElementById("updateButton").disabled = true;
   }
-  console.log(ti);
-  let words = myObj.actions[ti].command.split(' ');
-  console.log(myObj.actions[ti]);
-  if (words[0] == 'POURBOX') {
-    for (let i = 0; i < ingredients.box.length; i++) {
-      if (myObj.box[parseInt(words[1])-1].id == 
-        ingredients.box[i].id) {
-        showBox(ingredients.box[i].content);
+  else {
+    document.getElementById("updateButton").disabled = false;
+    for (let i = 0; i < myObj.actions.length; i++) {//find the selected element in myObj array
+      if (myObj.actions[i].id == id)
+        ti = i;
+    }
+    console.log(ti);
+    let words = myObj.actions[ti].command.split(' ');
+    console.log(myObj.actions[ti]);
+    if (words[0] == 'POURBOX') {
+      for (let i = 0; i < ingredients.box.length; i++) {
+        if (myObj.box[parseInt(words[1]) - 1].id ==
+          ingredients.box[i].id) {
+          showBox(ingredients.box[i].content);
+        }
       }
     }
   }
@@ -704,7 +717,7 @@ function onSelect(properties) {
         $('#timepicker').timepicker({
           minuteMax: 4,
           timeFormat: 'mm:ss',
-          showButtonPanel : false,
+          showButtonPanel: false,
         });
       },
       focusConfirm: false,
@@ -803,7 +816,7 @@ function updateHTML(command) {
   else {
     result += '<span id=swal-input2 value=""></span>';
   }
-  result += 'time<input id="timepicker" class="swal2-input">' +
+  result += 'time<input id="timepicker" class="swal2-input" value="00:00">' +
     '</html>';
   return result;
 }
