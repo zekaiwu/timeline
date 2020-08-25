@@ -1,0 +1,29 @@
+{
+	"name": "lll",
+	"id": 90,
+	"uuid": "c4b702f7-93ac-4799-8b73-827a99d06600",
+	"modified_date": "Tue Aug 25 2020 18:08:11 GMT+0800 (香港標準時間)",
+	"version": 0,
+	"remarks": "",
+	"actions": [],
+	"box": [
+		{
+			"id": -1
+		},
+		{
+			"id": -1
+		},
+		{
+			"id": 1
+		},
+		{
+			"id": -1
+		},
+		{
+			"id": -1
+		}
+	],
+	"water": [],
+	"oil": [],
+	"starch": []
+}

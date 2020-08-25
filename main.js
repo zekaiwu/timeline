@@ -45,7 +45,7 @@ let myObj = {
   starch: []
 };
 let ingredientForBoxSelect = [];
-let firstDraw = true, saved = false;
+let firstDraw = true, dontAddVersion = true;
 var container = document.getElementById('visualization');
 let startTime = new Date(2020, 0, 1, 0, 0, 0);
 let endTime = new Date(2020, 0, 1, 0, 5, 0);
@@ -319,6 +319,7 @@ function main(selectFile) {
   }
   function newObj() {
     allowEdit();
+    dontAddVersion = true;
     myObj.id = 0; document.getElementById("id").innerHTML = myObj.id;
     myObj.name = ""; document.getElementById("name").innerHTML = myObj.name;
     myObj.version = 0; document.getElementById("version").innerHTML = myObj.version;
@@ -649,6 +650,7 @@ document.getElementById("saveButton").onclick = async function () {
       }
       updateMyObj();
       myObj.filename = myObj.id + '_v' + myObj.version.toString() + '.json';
+      dontAddVersion = false;
       sendObj(myObj.filename, myObj);
     }
   })
@@ -679,6 +681,7 @@ let openFile = function (event) {
   };
   reader.readAsDataURL(input.files[0]);
   filename = input.files[0].name;
+  dontAddVersion = false;
   main(true);
 };
 
@@ -764,7 +767,7 @@ function liquidMax(command) {
 }
 function updateMyObj() {
   myObj.uuid = uuidv4();
-  myObj.version = parseInt(myObj.version) + 1;
+  if(!dontAddVersion) myObj.version = parseInt(myObj.version) + 1;
   myObj.water = [];
   myObj.oil = [];
   myObj.starch = [];
