@@ -44,7 +44,7 @@ let myObj = {
   oil: [],
   starch: []
 };
-let items = [], ingredientForBoxSelect = [];
+let ingredientForBoxSelect = [];
 let firstDraw = true;
 var container = document.getElementById('visualization');
 let startTime = new Date(2020, 0, 1, 0, 0, 0);
@@ -217,11 +217,16 @@ let options = {
       item.end = endTime;
       item.start.setTime(item.end.getTime() - item.length);
     }
-
+    if((item.end - item.start) == item.length){
+      item.start.setTime(item.start);
+      item.end.setTime(item.end);
+    }
     //set time in actions
     for (let i = 0; i < myObj.actions.length; i++) {
       if (item.id == myObj.actions[i].id) {
         myObj.actions[i].time = (item.start.getTime() - startTime.getTime()) / 1000;
+        myObj.actions[i].start = item.start.getTime();
+        myObj.actions[i].start = item.end.getTime();
         break;
       }
     }
@@ -233,11 +238,10 @@ let options = {
 
 
 };
-let timeline = new vis.Timeline(container, items, options);
+let timeline = new vis.Timeline(container, myObj.actions, options);
 data.append('f', 'BOX');
 xmlhttp.open("POST", 'ingredient.json', true);
 xmlhttp.send(data);
-
 //resive data from server
 xmlhttp.onreadystatechange = function () {
   if (this.readyState == 4 && this.status == 200) {
@@ -265,8 +269,6 @@ xmlhttp.onreadystatechange = function () {
     }
   }
 };
-
-
 window.onload = async function () {
   const { value: file } = await Swal.fire({
     title: 'Select file',
@@ -432,6 +434,10 @@ function commandToContent(command) {
   return tempContent;
 }
 //change other information when click the botton
+document.getElementById("showobj").onclick = function(){
+  console.log(JSON.stringify(myObj));
+  console.log(JSON.stringify(items));
+}
 document.getElementById("nameButton").onclick = async function () {
   const {
     value: name
@@ -524,7 +530,7 @@ function allowEdit() {
   };
   options.itemsAlwaysDraggable = { item: true };
   timeline.destroy();
-  timeline = new vis.Timeline(container, items, options);
+  timeline = new vis.Timeline(container, myObj.actions, options);
   timeline.on('select', onSelect);
 }
 
@@ -551,7 +557,6 @@ document.getElementById("addButton").onclick = async function () {
         focusConfirm: false,
         preConfirm: () => {
           let t = calculateSeconds(document.getElementById('timepicker').value);
-          console.log(t);
           let p1 = document.getElementById('swal-input1').value;
           let p2 = document.getElementById('swal-input2').value;
           let words = p1.split(' ');
@@ -586,7 +591,7 @@ document.getElementById("addButton").onclick = async function () {
           return;
         }
       }
-      if(words[0]=='POURBOX'){
+      if(words[0]=='POURBOX'){                
         if (parseInt(words[1])<1 || parseInt(words[1])>5){
           alertBox();
           return;
@@ -607,23 +612,18 @@ document.getElementById("addButton").onclick = async function () {
           break;
         }
       }
+      console.log("add id "+tempID);
       let newAction = {
         id: tempID,
         command: formValues.command,
         time: formValues.time,
-      };
-      myObj.actions.push(newAction);
-      words = formValues.command.split(' ');
-      let newItem = {
-        id: tempID,
         content: commandToContent(formValues.command),
-        command: formValues.command,
         length: time_dict.get(words[0]),
         start: new Date().setTime(startTime.getTime() + formValues.time * 1000),
         end: new Date().setTime(startTime.getTime() + formValues.time * 1000 + time_dict.get(words[0])),
       };
-      items.push(newItem);
-      timeline.setItems(items);
+      myObj.actions.push(newAction);
+      timeline.setItems(myObj.actions);
     }
   }
 };
@@ -684,17 +684,15 @@ let openFile = function (event) {
 
 function onSelect(properties) {
   let id = properties.items[0];
-  let ti, ti2;
-  for (let i = 0; i < items.length; i++) {//find the selected element in items array
-    if (items[i].id == id)
-      ti = i;
-  }
+  console.log(id);
+  let ti;
   for (let i = 0; i < myObj.actions.length; i++) {//find the selected element in myObj array
     if (myObj.actions[i].id == id)
-      ti2 = i;
+      ti = i;
   }
-  let words = myObj.actions[ti2].command.split(' ');
-  console.log(myObj.actions[ti2]);
+  console.log(ti);
+  let words = myObj.actions[ti].command.split(' ');
+  console.log(myObj.actions[ti]);
   if (words[0] == 'POURBOX') {
     for (let i = 0; i < ingredients.box.length; i++) {
       if (myObj.box[parseInt(words[1])-1].id == 
@@ -707,13 +705,13 @@ function onSelect(properties) {
     const {
       value: formValues
     } = await Swal.fire({
-      title: items[ti].command,
+      title: myObj.actions[ti].command,
       showCancelButton: true,
-      html: updateHTML(items[ti].command),
+      html: updateHTML(myObj.actions[ti].command),
       customClass: 'swal2-overflow',
       onOpen: function () {
         $('#timepicker').timepicker({
-          minuteMax: 5,
+          minuteMax: 4,
           timeFormat: 'mm:ss',
           showButtonPanel : false,
         });
@@ -729,16 +727,15 @@ function onSelect(properties) {
     })
     if (formValues) {
       if (words[0] == 'WOKTEMP' || words[0] == 'WOKY' || words[0] == 'POURBOX') {
-        items[ti].command = words[0] + ' ' + formValues[0];
+        myObj.actions[ti].command = words[0] + ' ' + formValues[0];
       }
-      items[ti].content = commandToContent(items[ti].command);
-      myObj.actions[ti2].command = items[ti].command;
+      myObj.actions[ti].content = commandToContent(myObj.actions[ti].command);
       if (formValues[1]) {
-        items[ti].start = new Date().setTime(startTime.getTime() + formValues[1] * 1000);
-        items[ti].end = new Date().setTime(startTime.getTime() + formValues[1] * 1000 + items[ti].length);
-        myObj.actions[ti2] = formValues[1];
+        myObj.actions[ti].start = new Date().setTime(startTime.getTime() + formValues[1] * 1000);
+        myObj.actions[ti].end = new Date().setTime(startTime.getTime() + formValues[1] * 1000 + myObj.actions[ti].length);
+        myObj.actions[ti].time = formValues[1];
       }
-      timeline.setItems(items);
+      timeline.setItems(myObj.actions);
     }
   }
 
@@ -842,17 +839,13 @@ function showTimeLine() {
     let tempTime = myObj.actions[i].time;
     let words = myObj.actions[i].command.split(' ');
     let tempContent = commandToContent(myObj.actions[i].command);
-    items[i] = {
+    myObj.actions[i] = {
       id: i,
       content: tempContent,
       command: myObj.actions[i].command,
       length: time_dict.get(words[0]),
       start: new Date().setTime(startTime.getTime() + myObj.actions[i].time * 1000),
       end: new Date().setTime(startTime.getTime() + myObj.actions[i].time * 1000 + time_dict.get(words[0])),
-    };
-    myObj.actions[i] = {
-      id: i,
-      command: items[i].command,
       time: tempTime,
     }
   }
@@ -860,13 +853,13 @@ function showTimeLine() {
   if (firstDraw) {
     timeline.destroy();
     console.log("firstTimeline")
-    timeline = new vis.Timeline(container, items, options);
+    timeline = new vis.Timeline(container, myObj.actions, options);
     timeline.on('select', onSelect);
     firstDraw = false;
   }
   else {
     timeline.destroy();
-    timeline = new vis.Timeline(container, items, options);
+    timeline = new vis.Timeline(container, myObj.actions, options);
     timeline.on('select', onSelect);
     timeline.redraw();
   }
