@@ -1,0 +1,38 @@
+{
+	"name": "pol",
+	"id": 1,
+	"uuid": "36078029-1379-41b3-a074-072096b7a397",
+	"modified_date": "Tue Aug 25 2020 17:13:20 GMT+0800 (香港標準時間)",
+	"version": 2,
+	"remarks": "",
+	"actions": [
+		{
+			"command": "WOKOIL",
+			"time": 0
+		},
+		{
+			"command": "POURBOX 1",
+			"time": 60
+		}
+	],
+	"box": [
+		{
+			"id": -1
+		},
+		{
+			"id": -1
+		},
+		{
+			"id": -1
+		},
+		{
+			"id": -1
+		},
+		{
+			"id": -1
+		}
+	],
+	"water": [],
+	"oil": [],
+	"starch": []
+}

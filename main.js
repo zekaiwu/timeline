@@ -45,7 +45,7 @@ let myObj = {
   starch: []
 };
 let ingredientForBoxSelect = [];
-let firstDraw = true;
+let firstDraw = true, saved = false;
 var container = document.getElementById('visualization');
 let startTime = new Date(2020, 0, 1, 0, 0, 0);
 let endTime = new Date(2020, 0, 1, 0, 5, 0);
@@ -200,15 +200,7 @@ let options = {
     });
   },
 
-  onMoving: function (item, callback) {
-    if ((item.end - item.start) != item.length) {
-      if (item.start + item.length - endTime >= 0) {
-        item.start = endTime - item.length;
-        item.end = endTime;
-      } else {
-        item.end.setTime(item.start.getTime() + item.length);
-      }
-    }
+  onMoving: function (item, callback) { 
     if (item.start < startTime) {
       item.start = startTime;
       item.end.setTime(item.start.getTime() + item.length);
@@ -217,16 +209,12 @@ let options = {
       item.end = endTime;
       item.start.setTime(item.end.getTime() - item.length);
     }
-    if((item.end - item.start) == item.length){
-      item.start.setTime(item.start);
-      item.end.setTime(item.end);
-    }
     //set time in actions
     for (let i = 0; i < myObj.actions.length; i++) {
       if (item.id == myObj.actions[i].id) {
         myObj.actions[i].time = (item.start.getTime() - startTime.getTime()) / 1000;
         myObj.actions[i].start = item.start.getTime();
-        myObj.actions[i].start = item.end.getTime();
+        myObj.actions[i].end = item.end.getTime();
         break;
       }
     }
@@ -874,7 +862,6 @@ function generateIngredientForBoxSelect(ingredients) {
     ingredientForBoxSelect.push(element.id.toString() + element.name + ' ' + element.content);
   })
 }
-
 
 
 
