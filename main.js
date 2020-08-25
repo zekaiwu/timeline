@@ -329,7 +329,6 @@ function main(selectFile) {
     myObj.uuid = ""; document.getElementById("uuid").innerHTML = myObj.uuid;
     myObj.remarks = ""; document.getElementById("remarks").innerHTML = myObj.remarks;
     myObj.actions = [];
-    items = [];
   }
   document.getElementById("new").onclick = async function () {
     newObj();
@@ -414,12 +413,18 @@ function prettyConfirm(title, text, callback) {
   })
 }
 
-
-
 function sendObj(filename, myObj) {
   let data = new FormData();
   data.append('f', 'WRITE');
-  let result = JSON.stringify(myObj);
+  let tactions = [], t2actions = myObj.actions;
+  for(let i=0;i<myObj.actions.length;i++){
+    tactions.push({command : myObj.actions[i].command, time : myObj.actions[i].time});
+  }
+  let tobj = myObj;
+  tobj.actions = tactions;
+  let result = JSON.stringify(tobj);
+  myObj.actions=t2actions;
+  console.log(JSON.stringify(myObj))
   data.append('obj', result);
   xmlhttp.open("POST", filename, true);
   xmlhttp.send(data);
@@ -436,7 +441,6 @@ function commandToContent(command) {
 //change other information when click the botton
 document.getElementById("showobj").onclick = function(){
   console.log(JSON.stringify(myObj));
-  console.log(JSON.stringify(items));
 }
 document.getElementById("nameButton").onclick = async function () {
   const {
@@ -646,7 +650,6 @@ document.getElementById("saveButton").onclick = async function () {
         alertNoID();
         return;
       }
-      console.log(myObj.box.length);
       updateMyObj();
       myObj.filename = myObj.id + '_v' + myObj.version.toString() + '.json';
       sendObj(myObj.filename, myObj);
@@ -871,6 +874,11 @@ function generateIngredientForBoxSelect(ingredients) {
     ingredientForBoxSelect.push(element.id.toString() + element.name + ' ' + element.content);
   })
 }
+
+
+
+
+
 function alertMaxAction() {
   Swal.fire(
     'Maximun amount of action is 255'

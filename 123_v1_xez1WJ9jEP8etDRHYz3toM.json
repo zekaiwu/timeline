@@ -1,0 +1,66 @@
+{
+	"name": "123",
+	"id": 123,
+	"uuid": "fcf05080-f8cd-4c4e-af60-a4324b05e815",
+	"modified_date": "Tue Aug 25 2020 14:59:42 GMT+0800 (香港標準時間)",
+	"version": 1,
+	"remarks": "",
+	"actions": [
+		{
+			"id": 0,
+			"command": "WOKTEMP 123",
+			"time": 133,
+			"content": "設置溫度123",
+			"length": 1,
+			"start": 1577808133001,
+			"end": 1577808000001
+		},
+		{
+			"id": 2,
+			"command": "WOKOIL",
+			"time": 174,
+			"content": "起鑊",
+			"length": 1189,
+			"start": 1577808175189,
+			"end": 1577808001189
+		},
+		{
+			"id": 1,
+			"command": "WOKTEMP 1",
+			"time": 137,
+			"content": "設置溫度1",
+			"length": 1,
+			"start": 1577808137001,
+			"end": 1577808000001
+		},
+		{
+			"id": 3,
+			"command": "POURFOOD",
+			"time": 240,
+			"content": "上菜",
+			"length": 8053,
+			"start": 1577808240000,
+			"end": 1577808248053
+		}
+	],
+	"box": [
+		{
+			"id": -1
+		},
+		{
+			"id": -1
+		},
+		{
+			"id": -1
+		},
+		{
+			"id": -1
+		},
+		{
+			"id": -1
+		}
+	],
+	"water": [],
+	"oil": [],
+	"starch": []
+}

@@ -1,0 +1,50 @@
+{
+	"name": "123",
+	"id": 123,
+	"uuid": "c83671ac-4434-4ea2-be15-efc009ef0a21",
+	"modified_date": "Tue Aug 25 2020 15:13:20 GMT+0800 (香港標準時間)",
+	"version": 4,
+	"remarks": "",
+	"actions": [
+		{
+			"content": "設置溫度123",
+			"command": "WOKTEMP 123",
+			"time": 133
+		},
+		{
+			"content": "起鑊",
+			"command": "WOKOIL",
+			"time": 174
+		},
+		{
+			"content": "設置溫度1",
+			"command": "WOKTEMP 1",
+			"time": 137
+		},
+		{
+			"content": "上菜",
+			"command": "POURFOOD",
+			"time": 240
+		}
+	],
+	"box": [
+		{
+			"id": -1
+		},
+		{
+			"id": -1
+		},
+		{
+			"id": -1
+		},
+		{
+			"id": -1
+		},
+		{
+			"id": -1
+		}
+	],
+	"water": [],
+	"oil": [],
+	"starch": []
+}

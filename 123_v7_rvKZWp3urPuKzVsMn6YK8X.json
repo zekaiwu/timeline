@@ -1,0 +1,64 @@
+{
+	"name": "123",
+	"id": 123,
+	"uuid": "ce9c26b0-a9da-44c5-8b2b-4a2254054c49",
+	"modified_date": "Tue Aug 25 2020 16:17:24 GMT+0800 (香港標準時間)",
+	"version": 7,
+	"remarks": "",
+	"actions": [
+		{
+			"command": "WOKTEMP 123",
+			"time": 133
+		},
+		{
+			"command": "WOKOIL",
+			"time": 174
+		},
+		{
+			"command": "WOKTEMP 1",
+			"time": 137
+		},
+		{
+			"command": "POURFOOD",
+			"time": 240
+		},
+		{
+			"command": "PWATER 123",
+			"time": 23
+		},
+		{
+			"command": "POIL 123",
+			"time": 0
+		}
+	],
+	"box": [
+		{
+			"id": -1
+		},
+		{
+			"id": -1
+		},
+		{
+			"id": -1
+		},
+		{
+			"id": -1
+		},
+		{
+			"id": -1
+		}
+	],
+	"water": [
+		{
+			"portion": 123,
+			"time": 23
+		}
+	],
+	"oil": [
+		{
+			"portion": 123,
+			"time": 0
+		}
+	],
+	"starch": []
+}
