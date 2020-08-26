@@ -59,9 +59,9 @@ let options = {
   horizontalScroll: true,
   zoomKey: 'ctrlKey',
   min: startTime,
-  max: new Date(2020, 0, 1, 0, 5, 2),
+  max: new Date(2020, 0, 1, 0, 5, 0),
   start: startTime,
-  end: new Date(2020, 0, 1, 0, 5, 2),
+  end: new Date(2020, 0, 1, 0, 5, 0),
   height: '500px',
   editable: {
     add: false,
