@@ -59,9 +59,9 @@ let options = {
   horizontalScroll: true,
   zoomKey: 'ctrlKey',
   min: startTime,
-  max: endTime,
+  max: new Date(2020, 0, 1, 0, 5, 2),
   start: startTime,
-  end: endTime,
+  end: new Date(2020, 0, 1, 0, 5, 2),
   height: '500px',
   editable: {
     add: false,
@@ -201,6 +201,11 @@ let options = {
   },
 
   onMoving: function (item, callback) {
+    let words = item.command.split(' ');
+    let templength = Math.ceil(item.length/1000)*1000;
+    if (words[0]=='WOKY' || words[0]=='WOKTEMP'){
+      templength = 1000;
+    }
     if ((item.end - item.start) != item.length) {
       if (item.start + item.length - endTime >= 0) {
         item.start = endTime - item.length;
@@ -213,9 +218,9 @@ let options = {
       item.start = startTime;
       item.end.setTime(item.start.getTime() + item.length);
     }
-    if (item.end > endTime) {
-      item.end = endTime;
-      item.start.setTime(item.end.getTime() - item.length);
+    if (item.start.getTime()+templength > endTime) {
+      item.start.setTime(endTime.getTime() - templength);
+      item.end.setTime(item.start.getTime() + item.length);
     }
     //set time in actions
     for (let i = 0; i < myObj.actions.length; i++) {
@@ -583,6 +588,10 @@ document.getElementById("addButton").onclick = async function () {
       //console.log(inputValue);
       console.log(formValues.command);
       let words = formValues.command.split(' ');
+      if ((formValues.time+time_dict.get(words[0])/1000)>=300){
+        alertTimeLimit();
+        return;
+      }
       if (liquidMax(words[0])) {
         alertMaxLiquid();
         return;
@@ -696,7 +705,6 @@ function onSelect(properties) {
       if (myObj.actions[i].id == id)
         ti = i;
     }
-    console.log(ti);
     let words = myObj.actions[ti].command.split(' ');
     console.log(myObj.actions[ti]);
     if (words[0] == 'POURBOX') {
@@ -733,6 +741,10 @@ function onSelect(properties) {
       }
     })
     if (formValues) {
+      if ((formValues[1]+myObj.actions[ti].length/1000)>=300){
+        alertTimeLimit();
+        return;
+      }
       if (words[0] == 'WOKTEMP' || words[0] == 'WOKY' || words[0] == 'POURBOX') {
         myObj.actions[ti].command = words[0] + ' ' + formValues[0];
       }
@@ -910,5 +922,10 @@ function alertWOKY() {
 function alertBox() {
   Swal.fire(
     'Range of BOX should be 1-5'
+  )
+}
+function alertTimeLimit() {
+  Swal.fire(
+    'actions cannot exceed 5 mins'
   )
 }
