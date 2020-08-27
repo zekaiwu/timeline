@@ -327,7 +327,7 @@ function main(selectFile) {
     dontAddVersion = true;
     myObj.id = 0; document.getElementById("id").innerHTML = myObj.id;
     myObj.name = ""; document.getElementById("name").innerHTML = myObj.name;
-    myObj.version = 0; document.getElementById("version").innerHTML = myObj.version;
+    myObj.version = 1; document.getElementById("version").innerHTML = myObj.version;
     myObj.uuid = ""; document.getElementById("uuid").innerHTML = myObj.uuid;
     myObj.remarks = ""; document.getElementById("remarks").innerHTML = myObj.remarks;
     myObj.actions = [];

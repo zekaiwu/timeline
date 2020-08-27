@@ -1,0 +1,55 @@
+{
+	"name": "jsidjisd",
+	"id": 2,
+	"uuid": "8a638e08-e3b7-4f35-b05a-9b325b759e63",
+	"modified_date": "Wed Aug 26 2020 16:56:34 GMT+0800 (香港標準時間)",
+	"version": 0,
+	"remarks": "",
+	"actions": [
+		{
+			"command": "WOKOIL",
+			"time": 298
+		},
+		{
+			"command": "PWATER 123",
+			"time": 296
+		},
+		{
+			"command": "POURFOOD",
+			"time": 291
+		},
+		{
+			"command": "WOKY ",
+			"time": 299
+		},
+		{
+			"command": "POURBOX 1",
+			"time": 296
+		}
+	],
+	"box": [
+		{
+			"id": -1
+		},
+		{
+			"id": -1
+		},
+		{
+			"id": -1
+		},
+		{
+			"id": -1
+		},
+		{
+			"id": 3
+		}
+	],
+	"water": [
+		{
+			"portion": 123,
+			"time": 296
+		}
+	],
+	"oil": [],
+	"starch": []
+}

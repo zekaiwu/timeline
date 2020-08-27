@@ -1,0 +1,29 @@
+{
+	"name": "qwe",
+	"id": 2,
+	"uuid": "49ac8554-6789-41f5-a792-af41decb839b",
+	"modified_date": "Wed Aug 26 2020 17:00:01 GMT+0800 (香港標準時間)",
+	"version": 0,
+	"remarks": "",
+	"actions": [],
+	"box": [
+		{
+			"id": -1
+		},
+		{
+			"id": -1
+		},
+		{
+			"id": 1
+		},
+		{
+			"id": -1
+		},
+		{
+			"id": -1
+		}
+	],
+	"water": [],
+	"oil": [],
+	"starch": []
+}
