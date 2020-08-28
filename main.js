@@ -28,8 +28,10 @@ let time_dict = new Map([
   ['START', 1],
   ['WAIT', 1]
 ]);
-var xmlhttp = new XMLHttpRequest(), xmlhttp1 = new XMLHttpRequest();
+var xmlhttp = new XMLHttpRequest();
 let filename = "example.json";
+
+// store attributes of reciepe
 let myObj = {
   filename: '',
   name: '',
@@ -44,6 +46,7 @@ let myObj = {
   oil: [],
   starch: []
 };
+// store the id+name+contents of ingredient into a string
 let ingredientForBoxSelect = [];
 let firstDraw = true, dontAddVersion = true;
 var container = document.getElementById('visualization');
@@ -239,8 +242,9 @@ let options = {
 
 
 };
+// construct a timeline
 let timeline = new vis.Timeline(container, myObj.actions, options);
-data.append('f', 'BOX');
+data.append('f', 'BOX');//tell server this is 
 xmlhttp.open("POST", 'ingredient.json', true);
 xmlhttp.send(data);
 //resive data from server
@@ -312,7 +316,9 @@ window.onload = async function () {
     updateBox(5);
   }
 }
-
+/**
+ * @param {bool}   selectFile It is selectFile or new a recipe
+ */
 function main(selectFile) {
   if (selectFile) {
     xmlhttp.open("GET", filename, true);
@@ -416,6 +422,10 @@ function prettyConfirm(title, text, callback) {
   })
 }
 
+/**
+ * @param {string} filename the filename of the recipe
+ * @param {type}   myObj the recipe to be saved
+ */
 function sendObj(filename, myObj) {
   let data = new FormData();
   data.append('f', 'WRITE');
@@ -432,6 +442,11 @@ function sendObj(filename, myObj) {
   xmlhttp.open("POST", filename, true);
   xmlhttp.send(data);
 }
+
+/**
+ * @param {string} command  command of action
+ * @return {string} the chinese content of command
+ */
 function commandToContent(command) {
   let words = command.split(' ');
   let tempContent;
@@ -520,6 +535,10 @@ document.getElementById("edit").onclick = async function () {
     }
   })
 };
+/**
+ * enable buttons
+ * 
+ */
 function allowEdit() {
   document.getElementById("nameButton").disabled = false;
   document.getElementById("versionButton").disabled = false;
@@ -681,7 +700,8 @@ async function updateBox(number) {
 
   }
 }
-
+/** select a file to open
+ */
 let openFile = function (event) {
   var input = event.target;
   var reader = new FileReader();
@@ -694,6 +714,9 @@ let openFile = function (event) {
   main(true);
 };
 
+/**when a action is selected
+ * @param {object} properties  items which is seleted
+ */
 function onSelect(properties) {
   let id = properties.items[0],ti;
   if (typeof(id)=='undefined' || document.getElementById("addButton").disabled == true) {
@@ -759,9 +782,16 @@ function onSelect(properties) {
   }
 
 };
+/**show the contents of the box
+ * @param {string} content  content in the box
+ */
 function showBox(content) {
   document.getElementById("boxContent").innerHTML = content;
 }
+/**determine weather the recipe pour one type of liquid
+ * @param {string} command  command of the new added action
+ * @return {bool} return true if the command is pouring liquid and that type of liquid has poured more than 3 times
+ */
 function liquidMax(command) {
   if (command == 'PWATER')
     if (numWater >= 3)
@@ -777,6 +807,8 @@ function liquidMax(command) {
     else numStarch++;
   return false;
 }
+/**update uuid, version, strach array, oil array, water array of recipe
+ */
 function updateMyObj() {
   myObj.uuid = uuidv4();
   if(!dontAddVersion) myObj.version = parseInt(myObj.version) + 1;
@@ -814,10 +846,18 @@ function updateMyObj() {
     }
   }
 }
+/**covert mm:ss to seconds represented in integer
+ * @param {string} string  
+ * @return {int} how many seconds after 00:00
+ */
 function calculateSeconds(string) {
   words = string.split(':');
   return parseInt(words[0]) * 60 + parseInt(words[1]);
 }
+/**generate update prompt HTML code
+ * @param {string} command
+ * @return {string} html code of update prompt
+ */
 function updateHTML(command) {
   let words = command.split(' ');
   let result = '<!doctype html>' +
@@ -835,6 +875,10 @@ function updateHTML(command) {
     '</html>';
   return result;
 }
+/**generate add prompt HTML code
+ * 
+ * @return {string} html code of add prompt
+ */
 function addHTML() {
   let result = 'function' +
     '<select id="swal-input1" class="swal2-input" list="swal-input1" name="swal-input1">' +
@@ -853,6 +897,9 @@ function addHTML() {
     'time<input id="timepicker" class="swal2-input" value="00:00">';
   return result;
 }
+/**
+ * construct time line
+ */
 function showTimeLine() {
   for (let i = 0; i < myObj.actions.length; i++) {
     let tempTime = myObj.actions[i].time;
@@ -884,6 +931,10 @@ function showTimeLine() {
   }
 
 }
+/**create a array, every entry contains id+name+content into a string
+ * @param {object} ingredients ingredients json file
+ * 
+ */
 function generateIngredientForBoxSelect(ingredients) {
   ingredientForBoxSelect = [];
   ingredients.box.forEach(function (element) {
@@ -893,37 +944,57 @@ function generateIngredientForBoxSelect(ingredients) {
 
 
 
-
+/**alert after add more than 255 actions
+ * 
+ */
 function alertMaxAction() {
   Swal.fire(
     'Maximun amount of action is 255'
   )
 }
+/**alert after pour a type if liquid more than 3 times
+ * 
+ */
 function alertMaxLiquid() {
   Swal.fire(
     'You can only pour 1 liquid 3 times'
   )
 }
+/**alert when save the recipe but the recipe don't have name 
+ * 
+ */
 function alertNoName() {
   Swal.fire(
     'Please input your name'
   )
 }
+/**alert when save the recipe but the recipe don't have ID
+ * 
+ */
 function alertNoID() {
   Swal.fire(
     'Please input your ID'
   )
 }
+/**alert when the woky less than 0 or higher than 2000
+ * 
+ */
 function alertWOKY() {
   Swal.fire(
     'Range of WOKY should be 0-2000'
   )
 };
+/**alert when pour the box not 1,2,3,4 or 5
+ * 
+ */
 function alertBox() {
   Swal.fire(
     'Range of BOX should be 1-5'
   )
 }
+/**alert when update or add a action which end time exceeds 5 mins
+ * 
+ */
 function alertTimeLimit() {
   Swal.fire(
     'actions cannot exceed 5 mins'
